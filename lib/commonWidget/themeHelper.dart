@@ -125,6 +125,19 @@ class ThemeHelper{
     );
   }
 
+  // static void toastForAPIFaliure(String message) {
+  //
+  //   Fluttertoast.showToast(
+  //       msg: "User Not Found,try Again..",
+  //       toastLength: Toast.LENGTH_SHORT,
+  //       gravity: ToastGravity.BOTTOM,
+  //       timeInSecForIosWeb: 3,
+  //       backgroundColor: Colors.red,
+  //       textColor: Colors.white,
+  //       fontSize: 16.0
+  //   );
+  //
+  // }
 
   static Widget showToolTipWidget({
     required String message,

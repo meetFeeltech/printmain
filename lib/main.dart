@@ -1,5 +1,5 @@
-import 'package:cheque_print/UI/Dahboard.dart';
-import 'package:cheque_print/UI/loginpage.dart';
+import 'package:cheque_print/UI/Dahboard/Dahboard.dart';
+import 'package:cheque_print/UI/loginpage/loginpage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        // fontFamily: 'Cutive',
       ),
       home: LoginPage(),
     );

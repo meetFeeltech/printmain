@@ -27,7 +27,6 @@ class _PreviewScreenState extends State<PreviewScreen> {
         .size
         .height;
 
-
     return Scaffold(
 
       appBar: AppBar(
