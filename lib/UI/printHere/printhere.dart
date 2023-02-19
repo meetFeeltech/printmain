@@ -359,7 +359,7 @@ class _PrintHereState extends State<PrintHere> {
 
 
                           pw.Positioned(
-                              top: 51,
+                              top: 53.5,
                               left: 25,
                               child: pw.Text("${widget.a5}",
                                   style: pw.TextStyle(
@@ -370,7 +370,7 @@ class _PrintHereState extends State<PrintHere> {
 
 
                           pw.Positioned(
-                              top: 77,
+                              top: 79,
                               left: 31,
                               child: pw.Container(
                                 height: 50,
@@ -391,7 +391,7 @@ class _PrintHereState extends State<PrintHere> {
 
                           pw.Positioned(
                               top: 105,
-                              left: 405,
+                              left: 395,
                               child: pw.Text("*** ${NumberFormat.simpleCurrency(locale: 'hi-In',decimalDigits: 2).format(int.parse(widget.a4))}/-".replaceAll("₹","" ),
                                   style: pw.TextStyle(
                                     // letterSpacing: 1,
@@ -441,7 +441,7 @@ class _PrintHereState extends State<PrintHere> {
                             // height: 250,
                             // width: 500,
                             child: pw.Center(
-                              child: pw.Image(img3),
+                              child: pw.Image(img4),
                             ),
                           ),
 
@@ -480,7 +480,7 @@ class _PrintHereState extends State<PrintHere> {
 
 
                           pw.Positioned(
-                              top: 51,
+                              top: 53.5,
                               left: 25,
                               child: pw.Text("${widget.a5}",
                                   style: pw.TextStyle(
@@ -491,7 +491,7 @@ class _PrintHereState extends State<PrintHere> {
 
 
                           pw.Positioned(
-                              top: 77,
+                              top: 79,
                               left: 31,
                               child: pw.Container(
                                 height: 50,
@@ -512,7 +512,7 @@ class _PrintHereState extends State<PrintHere> {
 
                           pw.Positioned(
                               top: 105,
-                              left: 405,
+                              left: 395,
                               child: pw.Text("*** ${NumberFormat.simpleCurrency(locale: 'hi-In',decimalDigits: 2).format(int.parse(widget.a4))}/-".replaceAll("₹","" ),
                                   style: pw.TextStyle(
                                     // letterSpacing: 1,
@@ -616,7 +616,7 @@ class _PrintHereState extends State<PrintHere> {
 
 
                           pw.Positioned(
-                              top: 51,
+                              top: 53.5,
                               left: 25,
                               child: pw.Text("${widget.a5}",
                                   style: pw.TextStyle(
@@ -627,7 +627,7 @@ class _PrintHereState extends State<PrintHere> {
 
 
                           pw.Positioned(
-                              top: 77,
+                              top: 79,
                               left: 31,
                               child: pw.Container(
                                 height: 50,
@@ -648,7 +648,7 @@ class _PrintHereState extends State<PrintHere> {
 
                           pw.Positioned(
                               top: 105,
-                              left: 405,
+                              left: 395,
                               child: pw.Text("*** ${NumberFormat.simpleCurrency(locale: 'hi-In',decimalDigits: 2).format(int.parse(widget.a4))}/-".replaceAll("₹","" ),
                                   style: pw.TextStyle(
                                     // letterSpacing: 1,
