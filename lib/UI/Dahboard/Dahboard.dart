@@ -135,61 +135,85 @@ class _DashboardState extends State<Dashboard> {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+
+
                   Expanded(
-                    child: Text(
-                      "CHEQUE DETAILS : ",
-                      softWrap: false,
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          Text(
+                          "CHEQUE DETAILS : ",
+                          softWrap: false,
+                          maxLines: 1,
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        ],
                       ),
                     ),
                   ),
-                  ElevatedButton(
-                    onPressed: createExcel,
-                    child: Text(
-                      "Get Excel",
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(color: Colors.white,
-                      ),
+
+                  Expanded(child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          width: 200,
+                        ),
+                        ElevatedButton(
+                          onPressed: createExcel,
+                          child: Text(
+                            "Get Excel",
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _pickFile();
+                          },
+                          child: Text(
+                            "Import Excel",
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        ElevatedButton(
+                          onPressed: _exportDataGridToExcel,
+                          child: Text(
+                            "Download Excel",
+                            maxLines: 1,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            style: TextStyle(color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _pickFile();
-                    },
-                    child: Text(
-                      "Import Excel",
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  ElevatedButton(
-                    onPressed: _exportDataGridToExcel,
-                    child: Text(
-                      "Downlaod Excel",
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                      style: TextStyle(color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  )),
+
+
                 ],
               ),
               Padding(
@@ -363,31 +387,65 @@ class TableDataSource extends DataGridSource {
 
       return Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: dataGridCell.columnName == "AccountPay"
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
+          child: dataGridCell.columnName == "AccountPay" ?
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+
+                  Text(
                       dataGridCell.value.toString(),
-                      overflow: TextOverflow.ellipsis,
                       softWrap: false,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(_context).push(MaterialPageRoute(
-                              builder: (context) => PrintHere(
-                                    a1: a1,
-                                    a2: a2,
-                                    a3: a3,
-                                    a4: a4,
-                                    a5: a5,
-                                    a6: a6,
-                                  )));
-                        },
-                        child: Text("Print"))
-                  ],
-                )
+
+                  SizedBox(
+                    width: 15,
+                  ),
+
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(_context).push(MaterialPageRoute(
+                            builder: (context) => PrintHere(
+                              a1: a1,
+                              a2: a2,
+                              a3: a3,
+                              a4: a4,
+                              a5: a5,
+                              a6: a6,
+                            )));
+                      },
+                      child: Text("Print")),
+
+                  // Expanded(
+                  //   child:SingleChildScrollView(
+                  //     scrollDirection: Axis.horizontal,
+                  //     child:  ElevatedButton(
+                  //         onPressed: () {
+                  //           Navigator.of(_context).push(MaterialPageRoute(
+                  //               builder: (context) => PrintHere(
+                  //                 a1: a1,
+                  //                 a2: a2,
+                  //                 a3: a3,
+                  //                 a4: a4,
+                  //                 a5: a5,
+                  //                 a6: a6,
+                  //               )));
+                  //         },
+                  //         child: Text("Print")),
+                  //   ),
+                  // ),
+
+
+                ],
+              ),
+            ),
+          )
+
+
               : dataGridCell.columnName == "CHEQUE-DATE"
                   ? Text(
                       dataGridCell.value.toString().substring(0, 10),

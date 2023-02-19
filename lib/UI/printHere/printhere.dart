@@ -1,5 +1,4 @@
 import 'package:cheque_print/UI/printHere/previewPage.dart';
-import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
@@ -39,253 +38,267 @@ class _PrintHereState extends State<PrintHere> {
         backgroundColor: Color(0xFF076799),
         title: Text("Print here : "),
       ),
+
+
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Text("Fname : ${widget.a1}"),
-            // Text("Lname : ${widget.a2}"),
-            // Text("Date : ${widget.a3}"),
-            // Text("Amn/W : ${widget.a4}"),
-            // Text("Amount : ${widget.a5}"),
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.blue[100]),
-                    height: main_height * 0.35,
-                    width: main_width * 0.65,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(color: Colors.white),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Container(
+            decoration: BoxDecoration(color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+              BoxShadow(
+              blurRadius: 10.0,
+            ),
+          ],
+            ),
+            width: main_width * 0.5,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  Text(
+                    "CHEQUE HOLDER Details",
+                    maxLines: 1,
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Colors.deepPurple,
+                        letterSpacing: 1),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
                             children: [
                               Text(
-                                "CHEQUE HOLDER Details",
+                                "Payee Name : ",
                                 style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25,
-                                    color: Colors.deepPurple,
-                                    letterSpacing: 1),
+                                    fontWeight: FontWeight.w600,
+                                    overflow:
+                                        TextOverflow.ellipsis),
                               ),
-
-                              Row(
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Payee Name : ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                          ),
-                                          Text("${widget.a5}",overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Cheque Num : ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                          ),
-                                          Text("${widget.a3}",
-                                            overflow: TextOverflow.ellipsis,),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Cheque-Date : ",
-                                            style: TextStyle(overflow: TextOverflow.ellipsis,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          Text(" ${widget.a2}",
-                                            overflow: TextOverflow.ellipsis,),
-                                          // Text(" ${widget.a2.replaceAll("-", "")}"),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Amount : ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                              NumberFormat.simpleCurrency(locale: 'hi-In',decimalDigits: 2).format(int.parse(widget.a4),
-                                              ),
-                                            overflow: TextOverflow.ellipsis,),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Amount : ",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".capitalize(),
-                                          overflow: TextOverflow.ellipsis,
-                                          softWrap: true,
-                                          maxLines: 5,),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Account-Pay : ",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          Text("${widget.a6}"),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              Text("${widget.a5}",overflow: TextOverflow.ellipsis,
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextButton(
-                                      onPressed: () {
-                                        _displayPdf();
-                                      },
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Color(
-                                            0xFF076799), // Background Color
-                                      ),
-                                      child: Text(
-                                        "Preview",
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  TextButton(
-                                      onPressed: () {
-                                        _createPdf();
-                                      },
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Color(
-                                            0xFF076799), // Background Color
-                                      ),
-                                      child: Text(
-                                        "Print",
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  TextButton(
-                                      onPressed: () {
-                                        generatePdf();
-                                      },
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Color(
-                                            0xFF076799), // Background Color
-                                      ),
-                                      child: Text(
-                                        "Genrate pdf",
-                                        style: TextStyle(color: Colors.white),
-                                      )),
-                                ],
-                              ),
-
-                              // Stack(
-                              //     fit: StackFit.passthrough,
-                              //     children: [
-                              //       Container(
-                              //         height: 336,
-                              //         width: 672,
-                              //         child: Center(
-                              //           child:  Image.asset("assets/images/c5.jpg",
-                              //             fit: BoxFit.fill,),
-                              //         ),
-                              //       ),
-                              //
-                              //       Positioned(
-                              //           top: 95,
-                              //           left: 525,
-                              //           child: Text("${widget.a2.replaceAll("-", "")}",
-                              //               style: TextStyle(
-                              //                 letterSpacing: 4.5,
-                              //                 fontSize: 11,
-                              //                 color: Colors.black,
-                              //               )
-                              //           )
-                              //       ),
-                              //
-                              //       Positioned(
-                              //           top: 95,
-                              //           left: 100,
-                              //           child: Text("${widget.a5}",
-                              //               style: TextStyle(
-                              //                 fontSize: 16,
-                              //                 color: Colors.black,
-                              //               )
-                              //           )
-                              //       ),
-                              //
-                              //       Positioned(
-                              //           top: 118,
-                              //           left: 95,
-                              //           child: Text("${widget.a4}",
-                              //               style: TextStyle(
-                              //                 fontSize: 16,
-                              //                 color: Colors.black,
-                              //               )
-                              //           )
-                              //       ),
-                              //
-                              //       Positioned(
-                              //           top: 136,
-                              //           left: 392,
-                              //           child: Text("${widget.a4}/-",
-                              //               style: TextStyle(
-                              //                 fontSize: 14,
-                              //                 color: Colors.black,
-                              //               )
-                              //           )
-                              //       ),
-                              //
-                              //
-                              //     ]
-                              // )
                             ],
                           ),
                         ),
-                      ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Text(
+                                "Cheque Num : ",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    overflow:
+                                        TextOverflow.ellipsis),
+                              ),
+                              Text("${widget.a3}",
+                                overflow: TextOverflow.ellipsis,),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Text(
+                                "Cheque-Date : ",
+                                style: TextStyle(overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(" ${widget.a2}",
+                                overflow: TextOverflow.ellipsis,),
+                              // Text(" ${widget.a2.replaceAll("-", "")}"),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Text(
+                                "Amount : ",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                  NumberFormat.simpleCurrency(locale: 'hi-In',decimalDigits: 2).format(int.parse(widget.a4),
+                                  ),
+                                overflow: TextOverflow.ellipsis,),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Text(
+                                "Amount : ",
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                "${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".capitalize(),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              maxLines: 1,),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              Text(
+                                "Account-Pay : ",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text("${widget.a6}"),
+                            ],
+                          ),
+                        ),
+
+
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        TextButton(
+                            onPressed: () {
+                              _createPdf();
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Color(
+                                  0xFF076799), // Background Color
+                            ),
+                            child: Text(
+                              "Print",
+                              style: TextStyle(color: Colors.white),
+                            )),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              _displayPdf();
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Color(
+                                  0xFF076799), // Background Color
+                            ),
+                            child: Text(
+                              "Preview",
+                              style: TextStyle(color: Colors.white),
+                            )),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              generatePdf();
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Color(
+                                  0xFF076799), // Background Color
+                            ),
+                            child: Text(
+                              "Genrate pdf",
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      ],
+                    ),
+                  ),
+
+                  // Stack(
+                  //     fit: StackFit.passthrough,
+                  //     children: [
+                  //       Container(
+                  //         height: 336,
+                  //         width: 672,
+                  //         child: Center(
+                  //           child:  Image.asset("assets/images/c5.jpg",
+                  //             fit: BoxFit.fill,),
+                  //         ),
+                  //       ),
+                  //
+                  //       Positioned(
+                  //           top: 95,
+                  //           left: 525,
+                  //           child: Text("${widget.a2.replaceAll("-", "")}",
+                  //               style: TextStyle(
+                  //                 letterSpacing: 4.5,
+                  //                 fontSize: 11,
+                  //                 color: Colors.black,
+                  //               )
+                  //           )
+                  //       ),
+                  //
+                  //       Positioned(
+                  //           top: 95,
+                  //           left: 100,
+                  //           child: Text("${widget.a5}",
+                  //               style: TextStyle(
+                  //                 fontSize: 16,
+                  //                 color: Colors.black,
+                  //               )
+                  //           )
+                  //       ),
+                  //
+                  //       Positioned(
+                  //           top: 118,
+                  //           left: 95,
+                  //           child: Text("${widget.a4}",
+                  //               style: TextStyle(
+                  //                 fontSize: 16,
+                  //                 color: Colors.black,
+                  //               )
+                  //           )
+                  //       ),
+                  //
+                  //       Positioned(
+                  //           top: 136,
+                  //           left: 392,
+                  //           child: Text("${widget.a4}/-",
+                  //               style: TextStyle(
+                  //                 fontSize: 14,
+                  //                 color: Colors.black,
+                  //               )
+                  //           )
+                  //       ),
+                  //
+                  //
+                  //     ]
+                  // )
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
     );

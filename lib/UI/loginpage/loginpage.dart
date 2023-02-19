@@ -1,12 +1,9 @@
-import 'dart:ffi';
-
 import 'package:cheque_print/UI/Dahboard/Dahboard.dart';
 import 'package:cheque_print/network/repositary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
-
 import '../../api/api.dart';
 import '../../bloc/login_bloc/login_bloc.dart';
 import '../../commonWidget/themeHelper.dart';
@@ -202,17 +199,19 @@ class _LoginPageState extends State<LoginPage> {
 
                                 // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard()));
 
+                                //
+                                // FocusManager.instance.primaryFocus?.unfocus();
+                                // if (_formKey.currentState!.validate()) {
+                                //   _formKey.currentState!.save();
+                                //   loginBloc
+                                //       .add(PostLoginDataEvent(email!, password!));
+                                // }
+                                //
+                                // print("email : $email , password $password");
+                                //
 
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!.save();
-                                  loginBloc
-                                      .add(PostLoginDataEvent(email!, password!));
-                                }
-
-                                print("email : $email , password $password");
-                                // Navigator.of(context).push
-                                //   (MaterialPageRoute(builder: (context)=>Dashboard()));
+                                Navigator.of(context).push
+                                  (MaterialPageRoute(builder: (context)=>Dashboard()));
 
 
 
