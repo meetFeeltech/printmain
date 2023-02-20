@@ -348,19 +348,20 @@ class _PrintHereState extends State<PrintHere> {
                                     color: PdfColors.black,
                                   ))),
 
-                          pw.Positioned(
-                              top: 1,
-                              left: 1,
-                              child: widget.a6 == "yes" ?
-                              pw.Image(img1,fit: pw.BoxFit.fill) :
-                              pw.Text("")
+                          // pw.Positioned(
+                          //     top: 1,
+                          //     left: 1,
+                          //     child: widget.a6 == "yes" ?
+                          //     pw.Image(img1,fit: pw.BoxFit.fill) :
+                          //     pw.Text("")
+                          //
+                          // ),
 
-                          ),
-
                           pw.Positioned(
-                              top: 0,
-                              left: 0,
+                              top: -15,
+                              left: -20,
                               child: pw.SizedBox(
+
                                   height: 50,
                                   width: 50,
                                   child: widget.a6 == "Yes" || widget.a6 == "yes" ?  pw.Image(img1)  :
@@ -469,18 +470,18 @@ class _PrintHereState extends State<PrintHere> {
                                     color: PdfColors.black,
                                   ))),
 
-                          pw.Positioned(
-                              top: 1,
-                              left: 1,
-                              child: widget.a6 == "yes" ?
-                              pw.Image(img1,fit: pw.BoxFit.fill) :
-                              pw.Text("")
+                          // pw.Positioned(
+                          //     top: 1,
+                          //     left: 1,
+                          //     child: widget.a6 == "yes" ?
+                          //     pw.Image(img1,fit: pw.BoxFit.fill) :
+                          //     pw.Text("")
+                          //
+                          // ),
 
-                          ),
-
                           pw.Positioned(
-                              top: 0,
-                              left: 0,
+                              top: -15,
+                              left: -20,
                               child: pw.SizedBox(
                                   height: 50,
                                   width: 50,
@@ -604,19 +605,19 @@ class _PrintHereState extends State<PrintHere> {
                                     fontSize: 11,
                                     color: PdfColors.black,
                                   ))),
+                          //
+                          // pw.Positioned(
+                          //     top: 1,
+                          //     left: 1,
+                          //     child: widget.a6 == "yes" ?
+                          //     pw.Image(img1,fit: pw.BoxFit.fill) :
+                          //     pw.Text("")
+                          //
+                          // ),
 
                           pw.Positioned(
-                              top: 1,
-                              left: 1,
-                              child: widget.a6 == "yes" ?
-                              pw.Image(img1,fit: pw.BoxFit.fill) :
-                              pw.Text("")
-
-                          ),
-
-                          pw.Positioned(
-                              top: 0,
-                              left: 0,
+                              top: -15,
+                              left: -20,
                               child: pw.SizedBox(
                                   height: 50,
                                   width: 50,

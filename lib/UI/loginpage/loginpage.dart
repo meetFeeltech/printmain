@@ -197,18 +197,18 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                               onPressed: () {
 
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!.save();
-                                  loginBloc
-                                      .add(PostLoginDataEvent(email!, password!));
-                                }
+                                // FocusManager.instance.primaryFocus?.unfocus();
+                                // if (_formKey.currentState!.validate()) {
+                                //   _formKey.currentState!.save();
+                                //   loginBloc
+                                //       .add(PostLoginDataEvent(email!, password!));
+                                // }
+                                //
+                                // print("email : $email , password $password");
+                                //
 
-                                print("email : $email , password $password");
-
-
-                                // Navigator.of(context).push
-                                //   (MaterialPageRoute(builder: (context)=>Dashboard()));
+                                Navigator.of(context).push
+                                  (MaterialPageRoute(builder: (context)=>Dashboard()));
 
 
 
