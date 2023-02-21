@@ -58,8 +58,6 @@ class _DashboardState extends State<Dashboard> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-
-
   Future<void> createExcel() async {
     final snackBar = SnackBar(
       duration: Duration(seconds: 1),
@@ -102,12 +100,60 @@ class _DashboardState extends State<Dashboard> {
 
   }
 
+  void _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      withData: true,
+      allowedExtensions: ['xlsx'],
+      type: FileType.custom,
+    );
+
+    // print("result $result");
+
+    if (result != null) {
+      // List<dynamic> xlsxToList = [];
+      // PlatformFile file = result.files.first;
+      // print(file.name);
+      // print(file.bytes);
+      // print(file.size);
+      // print(file.extension);
+      // print(file.path);
+      var bytes = result.files.single.bytes;
+      // print("bytes $bytes");
+      var excel = Excel.decodeBytes(bytes!);
+
+      final row = excel.tables[excel.tables.keys.first]!.rows
+          .map((e) => e.map((e) => e!.value).toList())
+          .toList();
+
+      // print("rows : ${row.elementAt(0)}");
+
+      var x1 = row..removeAt(0);
+      print("only data : $x1");
+      print("only data : ${x1.elementAt(0)}");
+      _tableDataSource = TableDataSource(context, x1: x1);
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 1),
+        content: const Text("Excel Imported Successfully!"),
+        backgroundColor: Color(0xFF076799),
+        action: SnackBarAction(
+          label: 'dismiss',
+          onPressed: () {
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      setState(() {});
+    } else {
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF076799),
+
         title: Text("CHEQUE PRINT"),
       ),
       endDrawer: Drawer(
@@ -129,6 +175,8 @@ class _DashboardState extends State<Dashboard> {
           ],
         ),
       ),
+
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -275,53 +323,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  void _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      withData: true,
-      allowedExtensions: ['xlsx'],
-      type: FileType.custom,
-    );
 
-    // print("result $result");
-
-    if (result != null) {
-      // List<dynamic> xlsxToList = [];
-      // PlatformFile file = result.files.first;
-      // print(file.name);
-      // print(file.bytes);
-      // print(file.size);
-      // print(file.extension);
-      // print(file.path);
-      var bytes = result.files.single.bytes;
-      // print("bytes $bytes");
-      var excel = Excel.decodeBytes(bytes!);
-
-      final row = excel.tables[excel.tables.keys.first]!.rows
-          .map((e) => e.map((e) => e!.value).toList())
-          .toList();
-
-      // print("rows : ${row.elementAt(0)}");
-
-      var x1 = row..removeAt(0);
-      print("only data : $x1");
-      print("only data : ${x1.elementAt(0)}");
-      _tableDataSource = TableDataSource(context, x1: x1);
-      setState(() {});
-    } else {
-    }
-    final snackBar = SnackBar(
-      duration: Duration(seconds: 1),
-      content: const Text("Excel Imported!"),
-      backgroundColor: Color(0xFF076799),
-      action: SnackBarAction(
-        label: 'dismiss',
-        onPressed: () {
-        },
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-  }
 }
 
 // class HolderModel {

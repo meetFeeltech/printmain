@@ -211,8 +211,6 @@ class _LoginPageState extends State<LoginPage> {
                                   (MaterialPageRoute(builder: (context)=>Dashboard()));
 
 
-
-
                               },
                               child: Text(
                                 "Log In",
