@@ -321,98 +321,89 @@ class _PrintHereState extends State<PrintHere> {
     doc.addPage(
       pw.Page(
         margin: pw.EdgeInsets.all(0.0),
-        clip: true,
+        // clip: true,
         pageFormat:
-        PdfPageFormat(21 * PdfPageFormat.cm, 8.89 * PdfPageFormat.cm,),
+        PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm,),
         build: (pw.Context context) {
           return
-            pw.Stack(
-              children: [
-                pw.Container(
-                  child: pw.Center(
-                    child: pw.Image(img3),
-                  ),
-                ),
+           pw.Container(
+             child:  pw.Stack(
+                 children: [
 
+                   //
+                   // pw.Container(
+                   //   child: pw.Center(
+                   //     child: pw.Image(img3),
+                   //   ),
+                   // ),
 
-                pw.Positioned(
-                    top: 21,
-                    left: 445,
-                    child: pw.Text("${widget.a2.replaceAll("-", "")}",
-                        style: pw.TextStyle(
-                          letterSpacing: 8,
-                          fontSize: 11,
-                          color: PdfColors.black,
-                        ))),
-
-                // pw.Positioned(
-                //     top: 1,
-                //     left: 1,
-                //     child: widget.a6 == "yes" ?
-                //     pw.Image(img1,fit: pw.BoxFit.fill) :
-                //     pw.Text("")
-                //
-                // ),
-
-                pw.Positioned(
-                    top: 6,
-                    left: 10,
-                    child: pw.SizedBox(
-
-                        height: 50,
-                        width: 50,
-                        child: widget.a6 == "Yes" || widget.a6 == "yes" ?  pw.Image(img1)  :
-                        pw.Text("")
-                    )
-
-
-                ),
-
-
-                pw.Positioned(
-                    top: 55,
-                    left: 62,
-                    child: pw.Text("${widget.a5}",
-                        style: pw.TextStyle(
-                          font: pw.Font.times(),
-                          fontSize: 12,
-                          color: PdfColors.black,
-                        ))),
-
-
-                pw.Positioned(
-                    top: 80,
-                    left: 78,
-                    child: pw.Container(
-                      height: 50,
-                      width: 500,
-                      child: pw.Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".capitalize(),
-                        maxLines: 2,
-                        style: pw.TextStyle(
-                          fontSize: 12,
-                          font: pw.Font.times(),
-                          lineSpacing: 7,
-                          letterSpacing: 1,
-                          color: PdfColors.black,
-                        ),
-                      ),
-                    )
-                ),
-
-
-                pw.Positioned(
-                    top: 105,
-                    left: 443,
-                    child: pw.Text("*** ${NumberFormat.simpleCurrency(locale: 'hi-In',decimalDigits: 2).format(int.parse(widget.a4))}/-".replaceAll("₹","" ),
-                        style: pw.TextStyle(
-                          // letterSpacing: 1,
-                          fontSize: 10,
-                          color: PdfColors.black,
-                        ))),
-              ]);
+                   pw.Positioned(
+                       top: 21,
+                       left: 445,
+                       child: pw.Text("${widget.a2.replaceAll("-", "")}",
+                           style: pw.TextStyle(
+                             letterSpacing: 8,
+                             fontSize: 11,
+                             color: PdfColors.black,
+                           ))),
 
 
 
+                   pw.Positioned(
+                       top: 0,
+                       left: 12,
+                       child: pw.SizedBox(
+
+                           height: 50,
+                           width: 50,
+                           child: widget.a6 == "Yes" || widget.a6 == "yes" ?  pw.Image(img1)  :
+                           pw.Text("")
+                       )
+                   ),
+
+
+                   pw.Positioned(
+                       top: 55,
+                       left: 62,
+                       child: pw.Text("${widget.a5}",
+                           style: pw.TextStyle(
+                             font: pw.Font.times(),
+                             fontSize: 12,
+                             color: PdfColors.black,
+                           ))),
+
+
+                   pw.Positioned(
+                       top: 80,
+                       left: 78,
+                       child: pw.Container(
+                         height: 50,
+                         width: 500,
+                         child: pw.Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".capitalize(),
+                           maxLines: 2,
+                           style: pw.TextStyle(
+                             fontSize: 12,
+                             font: pw.Font.times(),
+                             lineSpacing: 7,
+                             letterSpacing: 1,
+                             color: PdfColors.black,
+                           ),
+                         ),
+                       )
+                   ),
+
+
+                   pw.Positioned(
+                       top: 105,
+                       left: 443,
+                       child: pw.Text("*** ${NumberFormat.simpleCurrency(locale: 'hi-In',decimalDigits: 2).format(int.parse(widget.a4))}/-".replaceAll("₹","" ),
+                           style: pw.TextStyle(
+                             // letterSpacing: 1,
+                             fontSize: 10,
+                             color: PdfColors.black,
+                           ))),
+                 ])
+           );
         },
 
       ),
