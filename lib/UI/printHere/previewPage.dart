@@ -40,12 +40,12 @@ class _PreviewScreenState extends State<PreviewScreen> {
         child: PdfPreview(
           build: (format) => widget.doc.save(),
           allowSharing: true,
-          allowPrinting: true,
+          allowPrinting: false,
           initialPageFormat: PdfPageFormat(17.78 * PdfPageFormat.cm, 8.89 * PdfPageFormat.cm),
           pdfFileName: "mydoc.pdf",
-          onError: (context, error) => Center(child: Text("Something Went Wrong!"),),
-          dynamicLayout: true,
-          canChangePageFormat: true,
+          // onError: (context, error) => Center(child: Text("Something Went Wrong!"),),
+          dynamicLayout: false,
+          canChangePageFormat: false,
 
         ),
       ),

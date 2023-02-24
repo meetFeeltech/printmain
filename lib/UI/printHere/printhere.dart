@@ -39,7 +39,6 @@ class _PrintHereState extends State<PrintHere> {
         title: Text("Print here : "),
       ),
 
-
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(
@@ -304,7 +303,6 @@ class _PrintHereState extends State<PrintHere> {
     );
   }
 
-  /// display a pdf document.
 
   /// create PDF & print it
   void _createPdf() async {
@@ -323,7 +321,7 @@ class _PrintHereState extends State<PrintHere> {
         margin: pw.EdgeInsets.all(0.0),
         // clip: true,
         pageFormat:
-        PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm,),
+        PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
         build: (pw.Context context) {
           return
            pw.Container(
@@ -411,8 +409,15 @@ class _PrintHereState extends State<PrintHere> {
 
 
     await Printing.layoutPdf(
+        // usePrinterSettings: true,
+        // dynamicLayout: true,
+        // format: PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm,
+        // marginTop: 0),
+        // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
         onLayout: (PdfPageFormat format) async => doc.save());
     }
+
+  /// display a pdf document.
   void _displayPdf() async {
     final doc = pw.Document();
     final img = await imageFromAssetBundle("assets/images/c5.jpg");
@@ -668,6 +673,8 @@ class _PrintHereState extends State<PrintHere> {
     const title = 'eclectify Demo';
     await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, title));
   }
+
+
 }
 
 extension StringExtension on String {

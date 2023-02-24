@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   flutter_acrylic
   printing
+  url_launcher_linux
   window_size
 )
 
