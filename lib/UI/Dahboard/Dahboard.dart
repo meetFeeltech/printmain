@@ -243,7 +243,6 @@ class _DashboardState extends State<Dashboard> {
     if (result != null) {
       List<dynamic> xlsxToList = [];
       PlatformFile file = result.files.first;
-
       // print(file.name);
       // print(file.bytes);
       // print(file.size);
@@ -251,15 +250,27 @@ class _DashboardState extends State<Dashboard> {
       // print(file.path);
       // var bytes = result.files.single.bytes;
       var bytes = result.files.single.bytes;
-      print("result not null");
       // print("bytes : $bytes");
+
       var excel = Excel.decodeBytes(bytes!);
-      // print("excel : $excel");
-      final row = excel.tables[excel.tables.keys.first]!.rows
-          .map((e) => e.map((e) => e!.value).toList())
-          .toList();
+
+      // final row = excel.tables[excel.tables.keys.first]!.rows
+      //     .map((e) => e.map((e) => e!.value).toList())
+      //     .toList();
+      // print("abc here");
+      print("sdvmmd : ");
+
+
+    final row = excel.tables[excel.tables.keys.first]!.rows
+        .map((e) => e.map((e) => e!.value).toList())
+        .toList();
+
+      // if(row == null){
+      //   return print("abca,msncmas,");
+      // }
 
       // print("rows : ${row.elementAt(0)}");
+
       var x1 = row..removeAt(0);
 
       print("only data : $x1");
@@ -283,9 +294,13 @@ class _DashboardState extends State<Dashboard> {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      setState(() {});
+      setState(() {
+      });
 
-    } else {}
+    } else {
+
+    }
+
   }
 
   void _createPdf() async {
@@ -349,7 +364,7 @@ class _DashboardState extends State<Dashboard> {
                           child: pw.Container(
                             height: 50,
                             width: 500,
-                            child: pw.Text("${NumberToWordsEnglish.convert(bulkprintData[i].elementAt(3))} only".capitalize(),
+                            child: pw.Text("${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only".capitalize(),
                               maxLines: 2,
                               style: pw.TextStyle(
                                 fontSize: 12,
@@ -372,12 +387,6 @@ class _DashboardState extends State<Dashboard> {
                                 color: PdfColors.black,
                               ))),
 
-                      //
-                      // pw.Positioned(
-                      //   top: 3,
-                      //   left: 3,
-                      //   child: pw.Text("abc${bulkprintData[i].elementAt(1)}"),
-                      // )
                     ]))
               ])
             ]),
@@ -390,7 +399,7 @@ class _DashboardState extends State<Dashboard> {
 
     final snackBar = SnackBar(
       duration: Duration(seconds: 2),
-      content: const Text("Bulk Print Sccessfull!"),
+      content: const Text("Bulk Print!"),
       backgroundColor: Color(0xFF076799),
       action: SnackBarAction(
         label: 'dismiss',
