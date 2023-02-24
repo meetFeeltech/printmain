@@ -1,9 +1,7 @@
-import 'dart:ffi';
 
-// import 'package:cheque_print/UI/Dahboard.dart';
 import 'package:cheque_print/UI/Dahboard/Dahboard.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:async';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,13 +16,16 @@ class _LoginPageState extends State<LoginPage> {
 
   String? email;
   String? password;
-
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+
+    print("email $email , passwd $password");
+
     double main_Width = MediaQuery.of(context).size.width;
     double main_Height = MediaQuery.of(context).size.height;
-    final _formKey = GlobalKey<FormState>();
+
     return Scaffold(
       body: Row(
         children: [
@@ -119,7 +120,6 @@ class _LoginPageState extends State<LoginPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10)
                           ),
-                          labelText: 'Password ',
                           suffixIcon: IconButton(
                             icon: Icon(
                               visiblePassowrd
@@ -129,10 +129,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             onPressed: () {
                               setState(() {
+                                print("email $email , passwd $password");
                                 visiblePassowrd = !visiblePassowrd;
                               });
                             },
                           ),
+                          labelText: 'Password ',
                         ),
                         obscureText: visiblePassowrd,
                       ),
