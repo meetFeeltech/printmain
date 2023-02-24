@@ -3,7 +3,6 @@ import 'package:cheque_print/UI/loginpage/loginpage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-
   runApp(const MyApp());
 }
 
