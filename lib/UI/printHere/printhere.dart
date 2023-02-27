@@ -403,19 +403,36 @@ class _PrintHereState extends State<PrintHere> {
                  ])
            );
         },
-
       ),
     );
 
-
-    await Printing.layoutPdf(
-        // usePrinterSettings: true,
-        // dynamicLayout: true,
-        // format: PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm,
-        // marginTop: 0),
-        // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
+   final ab = await Printing.layoutPdf(
+      // usePrinterSettings: true,
+      // dynamicLayout: true,
+      // format: PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm,
+      // marginTop: 0),
+      // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
         onLayout: (PdfPageFormat format) async => doc.save());
-    }
+
+   if(ab == true){
+
+     final snackBar = SnackBar(
+       duration: Duration(seconds: 2),
+       content: const Text("Print Successfully!"),
+       backgroundColor: Color(0xFF076799),
+       action: SnackBarAction(
+         label: 'dismiss',
+         onPressed: () {},
+       ),
+     );
+     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+   }else{
+
+   }
+
+
+  }
 
   /// display a pdf document.
   void _displayPdf() async {
@@ -671,7 +688,24 @@ class _PrintHereState extends State<PrintHere> {
 
   void generatePdf() async {
     const title = 'eclectify Demo';
-    await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, title));
+    final abc = await Printing.layoutPdf(onLayout: (format) => _generatePdf(format, title));
+
+    if(abc == true){
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 2),
+        content: const Text("PDF Genrated!"),
+        backgroundColor: Color(0xFF076799),
+        action: SnackBarAction(
+          label: 'dismiss',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    }else{
+
+    }
+
   }
 
 

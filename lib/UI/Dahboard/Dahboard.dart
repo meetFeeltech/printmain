@@ -23,7 +23,6 @@ import 'package:printing/printing.dart';
 import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:intl/intl.dart';
 
-
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
 
@@ -32,10 +31,11 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-
   late TableDataSource _tableDataSource;
 
   List<List<dynamic>> bulkprintData = [];
+
+  List<List<dynamic>> rowdata1 = [];
 
   List<dynamic> _row = [];
   String? filePath;
@@ -66,7 +66,6 @@ class _DashboardState extends State<Dashboard> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-
 
   Future<void> createExcel1() async {
     final snackBar = SnackBar(
@@ -125,11 +124,7 @@ class _DashboardState extends State<Dashboard> {
       await file.writeAsBytes(bytes);
       OpenFile.open(fileName);
     }
-
   }
-
-
-
 
   Future<void> createExcel() async {
     var excel = Excel.createExcel();
@@ -146,26 +141,44 @@ class _DashboardState extends State<Dashboard> {
     excel.setDefaultSheet("abc");
 
     print("excel : ${excel.sheets[0]}");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("A1"), "SR-NO");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("B1"), "CHEQUEDATE");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("C1"), "CHEQUE NO");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("D1"), "AMOUNT");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("E1"), "PAYEENAME");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("F1"), "AccountPay");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("A1"), "SR-NO");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("B1"), "CHEQUEDATE");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("C1"), "CHEQUE NO");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("D1"), "AMOUNT");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("E1"), "PAYEENAME");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("F1"), "AccountPay");
 
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("A2"), "1");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("B2"), "19-01-2023");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("C2"), "23456 8765223 8923 32");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("D2"), "123456789");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("E2"), "Feeltech Solutions");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("F2"), "Yes");
+    excel.updateCell(
+        excel.getDefaultSheet().toString(), CellIndex.indexByString("A2"), "1");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("B2"), "19-01-2023");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("C2"), "23456 8765223 8923 32");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("D2"), "123456789");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("E2"), "Feeltech Solutions");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("F2"), "Yes");
 
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("A3"), "2");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("B3"), "20-02-2023");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("C3"), "23456 5465223 6533 45");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("D3"), "123456789");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("E3"), "Feeltech Solutions");
-    excel.updateCell(excel.getDefaultSheet().toString(),CellIndex.indexByString("F3"), "No");
+    excel.updateCell(
+        excel.getDefaultSheet().toString(), CellIndex.indexByString("A3"), "2");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("B3"), "20-02-2023");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("C3"), "23456 5465223 6533 45");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("D3"), "123456789");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("E3"), "Feeltech Solutions");
+    excel.updateCell(excel.getDefaultSheet().toString(),
+        CellIndex.indexByString("F3"), "No");
 
     // var sheet = excel["Sheet 1"];
     // excel.updateCell(excel.sheets[0].toString(), CellIndex.indexByString("A1"), "1");
@@ -174,15 +187,15 @@ class _DashboardState extends State<Dashboard> {
     // cell.value = "Heya How are you I am fine ok goood night";
     // // cell.cellStyle = cellStyle;
 
-
     var fileBytes = excel.save();
-      // excel.copy("A1", "A1");
-      // excel.updateCell(sheet, cellIndex, value)
+    // excel.copy("A1", "A1");
+    // excel.updateCell(sheet, cellIndex, value)
 
-
-    var directory = (await getApplicationSupportDirectory()).path;;
-    final String fileName =
-    Platform.isWindows ? '$directory\\Output.xlsx' : '$directory/Output.xlsx';
+    var directory = (await getApplicationSupportDirectory()).path;
+    ;
+    final String fileName = Platform.isWindows
+        ? '$directory\\Output.xlsx'
+        : '$directory/Output.xlsx';
 
     final File file = File(fileName);
     await file.writeAsBytes(fileBytes!);
@@ -192,15 +205,11 @@ class _DashboardState extends State<Dashboard> {
     print("directory $directory");
     print("directory $fileName");
 
-
     // final String fileName =
     // Platform.isWindows ? '$path\\Output.xlsx' : '$path/Output.xlsx';
     // final File file = File(fileName);
     // await file.writeAsBytes(bytes);
     // OpenFile.open(fileName);
-
-
-
 
     //Create a Excel document.
     //Creating a workbook.
@@ -220,8 +229,6 @@ class _DashboardState extends State<Dashboard> {
     // final File file = File(fileName);
     // await file.writeAsBytes(bytes);
     // OpenFile.open(fileName);
-
-
 
     // final String path = (await getApplicationSupportDirectory()).path;
     // final String fileName =
@@ -258,54 +265,64 @@ class _DashboardState extends State<Dashboard> {
       //     .map((e) => e.map((e) => e!.value).toList())
       //     .toList();
       // print("abc here");
-      print("sdvmmd : ");
+      // excel.tables[excel.tables.keys.first]!.rows
+      //     .map((e) => e.map((e) => print("${e!.value}")).toList())
+      //     .toList();
 
+      try {
+        final row = excel.tables[excel.tables.keys.first]!.rows
+            .map((e) => e.map((e) => e!.value).toList())
+            .toList();
 
-    final row = excel.tables[excel.tables.keys.first]!.rows
-        .map((e) => e.map((e) => e!.value).toList())
-        .toList();
+        var x1 = row..removeAt(0);
 
-      // if(row == null){
-      //   return print("abca,msncmas,");
-      // }
+        rowdata1 = x1;
 
+        final snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content: const Text("Excel Imported Successfully!"),
+          backgroundColor: Color(0xFF076799),
+          action: SnackBarAction(
+            label: 'dismiss',
+            onPressed: () {},
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } catch (e) {
+        final snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content: const Text("Excel is not in Format!"),
+          backgroundColor: Color(0xFF076799),
+          action: SnackBarAction(
+            label: 'dismiss',
+            onPressed: () {},
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+
+      // final row = excel.tables[excel.tables.keys.first]!.rows
+      // .map((e) => e.map((e) => e!.value).toList())
+      // .toList();
       // print("rows : ${row.elementAt(0)}");
 
-      var x1 = row..removeAt(0);
+      print("only data : $rowdata1");
+      print("only data : ${rowdata1.elementAt(0)}");
+      _tableDataSource = TableDataSource(context, x1: rowdata1);
 
-      print("only data : $x1");
-      print("only data : ${x1.elementAt(0)}");
-      _tableDataSource = TableDataSource(context, x1: x1);
+      print("all data $rowdata1");
+      print("one data ${rowdata1.elementAt(1)}");
+      // print("one data ${x1.elementAt(1).elementAt(3)}");
 
-      print("all data $x1");
-      print("one data ${x1.elementAt(1)}");
-      print("one data ${x1.elementAt(1).elementAt(3)}");
+      bulkprintData = rowdata1;
 
-      bulkprintData = x1;
-
-      final snackBar = SnackBar(
-        duration: Duration(seconds: 2),
-        content: const Text("Excel Imported Successfully!"),
-        backgroundColor: Color(0xFF076799),
-        action: SnackBarAction(
-          label: 'dismiss',
-          onPressed: () {},
-        ),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-      setState(() {
-      });
-
-    } else {
-
-    }
-
+      setState(() {});
+    } else {}
   }
 
   void _createPdf() async {
     print("call data page");
-  if(bulkprintData == bulkprintData!){
+
     final doc = pw.Document();
     final img1 = await imageFromAssetBundle("assets/images/mm.png");
 
@@ -320,107 +337,105 @@ class _DashboardState extends State<Dashboard> {
               8 * PdfPageFormat.cm,
             ),
             build: (pw.Context context) => <pw.Widget>[
-              pw.Wrap(children: [
-                pw.Container(
-                    height: 8 * PdfPageFormat.cm,
-                    child: pw.Stack(children: [
-                      pw.Positioned(
-                          top: 21,
-                          left: 445,
-                          child: pw.Text(
-                              "${bulkprintData[i].elementAt(1).toString().replaceAll("-", "")}",
-                              style: pw.TextStyle(
-                                letterSpacing: 8,
-                                fontSize: 11,
-                                color: PdfColors.black,
-                              ))),
-
-                      pw.Positioned(
-                          top: 0,
-                          left: 12,
-                          child: pw.SizedBox(
-                              height: 50,
-                              width: 50,
-                              child: bulkprintData[i].elementAt(5).toString() == "Yes" ||
-                                  bulkprintData[i].elementAt(5).toString() == "yes"
-                                  ? pw.Image(img1)
-                                  : pw.Text(""))),
-
-
-                      pw.Positioned(
-                          top: 55,
-                          left: 62,
-                          child: pw.Text("${bulkprintData[i].elementAt(4)}",
-                              style: pw.TextStyle(
-                                font: pw.Font.times(),
-                                fontSize: 12,
-                                color: PdfColors.black,
-                              ))),
-
-
-                      pw.Positioned(
-                          top: 80,
-                          left: 78,
-                          child: pw.Container(
-                            height: 50,
-                            width: 500,
-                            child: pw.Text("${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only".capitalize(),
-                              maxLines: 2,
-                              style: pw.TextStyle(
-                                fontSize: 12,
-                                font: pw.Font.times(),
-                                lineSpacing: 7,
-                                letterSpacing: 1,
-                                color: PdfColors.black,
-                              ),
-                            ),
-                          )
-                      ),
-
-                      pw.Positioned(
-                          top: 105,
-                          left: 443,
-                          child: pw.Text("*** ${NumberFormat.simpleCurrency(locale: 'hi-In',decimalDigits: 2).format(int.parse(bulkprintData[i].elementAt(3).toString()))}/-".replaceAll("₹","" ),
-                              style: pw.TextStyle(
-                                // letterSpacing: 1,
-                                fontSize: 10,
-                                color: PdfColors.black,
-                              ))),
-
-                    ]))
-              ])
-            ]),
+                  pw.Wrap(children: [
+                    pw.Container(
+                        height: 8 * PdfPageFormat.cm,
+                        child: pw.Stack(children: [
+                          pw.Positioned(
+                              top: 21,
+                              left: 445,
+                              child: pw.Text(
+                                  "${bulkprintData[i].elementAt(1).toString().replaceAll("-", "")}",
+                                  style: pw.TextStyle(
+                                    letterSpacing: 8,
+                                    fontSize: 11,
+                                    color: PdfColors.black,
+                                  ))),
+                          pw.Positioned(
+                              top: 0,
+                              left: 12,
+                              child: pw.SizedBox(
+                                  height: 50,
+                                  width: 50,
+                                  child: bulkprintData[i]
+                                                  .elementAt(5)
+                                                  .toString() ==
+                                              "Yes" ||
+                                          bulkprintData[i]
+                                                  .elementAt(5)
+                                                  .toString() ==
+                                              "yes"
+                                      ? pw.Image(img1)
+                                      : pw.Text(""))),
+                          pw.Positioned(
+                              top: 55,
+                              left: 62,
+                              child: pw.Text("${bulkprintData[i].elementAt(4)}",
+                                  style: pw.TextStyle(
+                                    font: pw.Font.times(),
+                                    fontSize: 12,
+                                    color: PdfColors.black,
+                                  ))),
+                          pw.Positioned(
+                              top: 80,
+                              left: 78,
+                              child: pw.Container(
+                                height: 50,
+                                width: 500,
+                                child: pw.Text(
+                                  "${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only"
+                                      .capitalize(),
+                                  maxLines: 2,
+                                  style: pw.TextStyle(
+                                    fontSize: 12,
+                                    font: pw.Font.times(),
+                                    lineSpacing: 7,
+                                    letterSpacing: 1,
+                                    color: PdfColors.black,
+                                  ),
+                                ),
+                              )),
+                          pw.Positioned(
+                              top: 105,
+                              left: 443,
+                              child: pw.Text(
+                                  "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(bulkprintData[i].elementAt(3).toString()))}/-"
+                                      .replaceAll("₹", ""),
+                                  style: pw.TextStyle(
+                                    // letterSpacing: 1,
+                                    fontSize: 10,
+                                    color: PdfColors.black,
+                                  ))),
+                        ]))
+                  ])
+                ]),
       );
     }
 
-    await Printing.layoutPdf(
+      final ab = await Printing.layoutPdf(
         // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
-        onLayout: (PdfPageFormat format) async => doc.save());
+          onLayout: (PdfPageFormat format) async => doc.save());
 
-    final snackBar = SnackBar(
-      duration: Duration(seconds: 2),
-      content: const Text("Bulk Print!"),
-      backgroundColor: Color(0xFF076799),
-      action: SnackBarAction(
-        label: 'dismiss',
-        onPressed: () {},
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    print("nlkscnda ${ab}");
+    print("nlkscnda ${ab.runtimeType}");
 
-  } else {
-    final snackBar = SnackBar(
-      duration: Duration(seconds: 2),
-      content: const Text("Data is not in Format!"),
-      backgroundColor: Color(0xFF076799),
-      action: SnackBarAction(
-        label: 'dismiss',
-        onPressed: () {},
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    if(ab == true){
+      print("abc");
 
-  }
+      final snackBar = SnackBar(
+        duration: Duration(seconds: 2),
+        content: const Text("Bulk Print!"),
+        backgroundColor: Color(0xFF076799),
+        action: SnackBarAction(
+          label: 'dismiss',
+          onPressed: () {},
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    } else{
+      print("xyz");
+    }
 
   }
 
@@ -725,5 +740,3 @@ class TableDataSource extends DataGridSource {
     }).toList());
   }
 }
-
-
