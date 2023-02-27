@@ -708,7 +708,6 @@ class _PrintHereState extends State<PrintHere> {
 
   }
 
-
 }
 
 extension StringExtension on String {

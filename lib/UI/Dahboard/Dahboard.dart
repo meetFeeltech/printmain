@@ -1,5 +1,7 @@
 import 'package:cheque_print/UI/USERS/users_data.dart';
+import 'package:cheque_print/UI/loginpage/loginpage.dart';
 import 'package:cheque_print/UI/printHere/printhere.dart';
+import 'package:cheque_print/commonWidget/themeHelper.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -412,14 +414,14 @@ class _DashboardState extends State<Dashboard> {
       );
     }
 
-      final ab = await Printing.layoutPdf(
+    final ab = await Printing.layoutPdf(
         // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
-          onLayout: (PdfPageFormat format) async => doc.save());
+        onLayout: (PdfPageFormat format) async => doc.save());
 
     print("nlkscnda ${ab}");
     print("nlkscnda ${ab.runtimeType}");
 
-    if(ab == true){
+    if (ab == true) {
       print("abc");
 
       final snackBar = SnackBar(
@@ -432,17 +434,56 @@ class _DashboardState extends State<Dashboard> {
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-    } else{
+    } else {
       print("xyz");
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
+
+
+    final main_width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final main_height = MediaQuery
+        .of(context)
+        .size
+        .height;
+
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => {
+            showDialog(context: context,
+                builder: (BuildContext context) {
+                  return  AlertDialog(
+                    title: Row(
+                      children: [
+                        Text("Do you want to LogOut?"),
+                      ],
+                    ),
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: 40,
+                        ),
+                        ElevatedButton(onPressed: (){
+                          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginPage()),(route) => false);
+                        }, child: Text("Yes")),
+                        ElevatedButton(onPressed: (){
+                          Navigator.of(context).pop();
+                        }, child: Text("No")),
+                      ],
+                    ),
+                    shadowColor: Colors.grey,
+                  );
+                })
+          },
+        ),
         backgroundColor: Color(0xFF076799),
         title: Text("CHEQUE PRINT"),
       ),

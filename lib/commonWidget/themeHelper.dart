@@ -151,7 +151,5 @@ class ThemeHelper{
     );
   }
 
-
-
-
+  
 }
