@@ -5,6 +5,7 @@ import 'package:cheque_print/commonWidget/themeHelper.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
@@ -471,7 +472,9 @@ class _DashboardState extends State<Dashboard> {
                         SizedBox(
                           width: 40,
                         ),
-                        ElevatedButton(onPressed: (){
+                        ElevatedButton(onPressed: () async {
+                          SharedPreferences pref = await SharedPreferences.getInstance();
+                          pref.clear();
                           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>LoginPage()),(route) => false);
                         }, child: Text("Yes")),
                         ElevatedButton(onPressed: (){

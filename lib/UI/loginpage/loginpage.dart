@@ -1,7 +1,10 @@
 
 import 'package:cheque_print/UI/Dahboard/Dahboard.dart';
+import 'package:cheque_print/main.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -154,13 +157,16 @@ class _LoginPageState extends State<LoginPage> {
                         ),
 
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             _formKey.currentState!.save();
 
                             Text("emal : $email");
                             Text("pass : $password");
 
                             if(email == "abc@gmail.com" && password == "Abc@123"){
+
+                              var sharedpef = await SharedPreferences.getInstance();
+                              sharedpef.setBool(SplashState.KeyLogIn, true);
                               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard()));
                             }else{
 
