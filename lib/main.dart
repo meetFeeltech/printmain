@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cheque_print/UI/Dahboard/Dahboard.dart';
 import 'package:cheque_print/UI/loginpage/loginpage.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -24,13 +25,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
 
   @override
   State<Splash> createState() => SplashState();
 }
+
 class SplashState extends State<Splash> with TickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 1),
@@ -56,22 +57,20 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
   static const String KeyLogIn = "Login";
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     whereToGo();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body:Center(
-        child: FadeTransition(
-          opacity: _animation,
-          child: Image.asset("assets/images/f1.png"),
-        ),
-      )
-    );
+        body: Center(
+      child: FadeTransition(
+        opacity: _animation,
+        child: Image.asset("assets/images/f1.png"),
+      ),
+    ));
   }
 
   void whereToGo() async {
@@ -79,21 +78,30 @@ class SplashState extends State<Splash> with TickerProviderStateMixin {
     var isLoggedIn = sharedpref.getBool(KeyLogIn);
 
     Timer(Duration(seconds: 1), () {
-      if(isLoggedIn!=null){
+      if (isLoggedIn != null) {
         print("abc");
-        if(isLoggedIn){
+        if (isLoggedIn) {
           print("abc");
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard()));
-        }else{
+
+          Navigator.push(context, PageTransition(type: PageTransitionType.leftToRight, child: Dashboard()));
+          // Navigator.of(context)
+          //     .push(MaterialPageRoute(builder: (context) => Dashboard()));
+        } else {
           print("abc");
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LoginPage()));
+          Navigator.push(context, PageTransition(type: PageTransitionType.leftToRight, child: LoginPage()));
+
+          // Navigator.of(context)
+          //     .push(MaterialPageRoute(builder: (context) => LoginPage()));
         }
-      }else{
+      } else {
         print("abc");
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LoginPage()));
+        Navigator.push(context, PageTransition(type: PageTransitionType.leftToRight, child: LoginPage()));
+
+        // Navigator.of(context)
+        //     .push(MaterialPageRoute(builder: (context) => LoginPage()));
       }
     });
-
   }
-
 }
+
+

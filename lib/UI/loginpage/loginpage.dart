@@ -2,6 +2,7 @@
 import 'package:cheque_print/UI/Dahboard/Dahboard.dart';
 import 'package:cheque_print/main.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -167,7 +168,8 @@ class _LoginPageState extends State<LoginPage> {
 
                               var sharedpef = await SharedPreferences.getInstance();
                               sharedpef.setBool(SplashState.KeyLogIn, true);
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard()));
+                              Navigator.push(context, PageTransition(type: PageTransitionType.leftToRight, child: Dashboard()));
+                              // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard()));
                             }else{
 
                               final snackBar = SnackBar(
