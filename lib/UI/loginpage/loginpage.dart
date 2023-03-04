@@ -1,11 +1,13 @@
-
 import 'package:cheque_print/UI/Dahboard/Dahboard.dart';
-import 'package:cheque_print/main.dart';
+import 'package:cheque_print/network/repositary.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
-import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
+import '../../api/api.dart';
+import '../../bloc/login_bloc/login_bloc.dart';
+import '../../commonWidget/themeHelper.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,18 +20,89 @@ class _LoginPageState extends State<LoginPage> {
 
   bool visiblePassowrd = true;
 
+  // final toast = FToast();
+  LoginScreenBloc loginBloc = LoginScreenBloc(Repository.getInstance());
+
   String? email;
   String? password;
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
 
-    print("email $email , passwd $password");
+    return Scaffold(
 
+      body: BlocProvider<LoginScreenBloc>(
+        create: (context) => loginBloc..add(LoginScreenInitialEvent()),
+        child: BlocConsumer<LoginScreenBloc, LoginScreenStates>(
+          builder: (context, state) {
+            if (state is LoginScreenLoadingState) {
+              return ThemeHelper.buildLoadingWidget();
+            } else {
+              return mainLoginForm();
+            }
+          },
+          listener: (context, state) async {
+            if (state is APIFailureState) {
+
+              // final snackBar = SnackBar(
+              //   content: const Text('Wrong id or Password!'),
+              //   backgroundColor: Color(0xFF076799),
+              //   action: SnackBarAction(
+              //     label: 'dismiss',
+              //     onPressed: () {
+              //     },
+              //   ),
+              // );
+              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+
+
+
+              final main_width = MediaQuery.of(context).size.width;
+
+              ThemeHelper.customDialogForMessage(
+                  isBarrierDismissible: false,
+                  context,
+                  "Wrong Id or Password!",
+                  main_width * 0.25,
+                  // contentMessage: contentMes,
+                      () {
+                    // Navigator.of(context).pop('refresh');
+                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop('refresh');
+                  },
+                  ForSuccess: true);
+              // ThemeHelper.toastForAPIFaliure(state.exception.toString());
+            } else if (state is PostLoginDataEventState) {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => Dashboard()));
+
+              // final snackBar = SnackBar(
+              //   content: const Text("Success fully Logged In..."),
+              //   backgroundColor: Color(0xFF076799),
+              //   action: SnackBarAction(
+              //     label: 'dismiss',
+              //     onPressed: () {
+              //     },
+              //   ),
+              // );
+              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+              // "Success fully Logged In..."
+
+              accessToken = state.loginResponseData.accessToken;
+            }
+          },
+        ),
+      ),
+
+    );
+  }
+
+  Widget mainLoginForm() {
     double main_Width = MediaQuery.of(context).size.width;
     double main_Height = MediaQuery.of(context).size.height;
-
+    final _formKey = GlobalKey<FormState>();
     return Scaffold(
       body: Row(
         children: [
@@ -41,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("assets/images/5.jpg"),
+                        image: AssetImage("assets/images/mic.png"),
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -67,63 +140,69 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 35,),
                     Padding(padding: EdgeInsets.only(top: 10,bottom: 10,left: 40,right: 40),
                       child: TextFormField(
+                        initialValue: "admin@gmail.com",
                         style: TextStyle(
-                          letterSpacing: 2
+                            fontSize: 18,
+                            letterSpacing: 2
                         ),
-                        // initialValue: "abc@gmail.com",
-                        validator: (value){
-                          if(value == null){
-                            return 'Id can\'t be empty';
-                          }else if(value == "abc@gmail.com"){
-                            return null;
+                        validator: (value) {
+                          RegExp regex = RegExp(
+                              "^[a-zA-Z0-9.a-zA-Z0-9.!#\$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+                          if (value == null || value.isEmpty) {
+                            return 'Email can\'t be empty';
+                          } else if (!regex.hasMatch(value)) {
+                            return ("Please check your email address");
                           }
+                          return null;
                         },
                         onSaved: (onSavedVal) {
                           print(onSavedVal);
                           email = onSavedVal;
                         },
                         decoration: InputDecoration(
-                          filled: true, //<-- SEE HERE
-                          fillColor: Colors.grey[300],
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10)
                           ),
-                          labelText: 'Enter Id : ',
+                            labelText: 'User Name ',
+                            hintText: "Enter Id "
                         ),
                       ),
                     ),
 
                     Padding(padding: EdgeInsets.only(top: 10,bottom: 10,left: 40,right: 40),
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.always,
+                        textInputAction: TextInputAction.go,
+                        onFieldSubmitted: (value){
+
+                          FocusManager.instance.primaryFocus?.unfocus();
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            loginBloc
+                                .add(PostLoginDataEvent(email!, password!));
+                          }
+
+                        },
+
                         style: TextStyle(
+                            fontSize: 18,
                             letterSpacing: 2
                         ),
-                        // initialValue: "Abc@123",
-                        validator: (value){
-                          String? validatePassword(String value) {
-                            RegExp regex =
-                            RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-                            if (value.isEmpty) {
-                              return 'Please enter password';
-                            } else {
-                              if (!regex.hasMatch(value)) {
-                                return 'Enter valid password';
-                              } else {
-                                return null;
-                              }
-                            }
+                        initialValue: "Admin@123",
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+
                           }
+                          return null;
                         },
                         onSaved: (onSavedVal) {
-                          print(onSavedVal);
                           password = onSavedVal;
                         },
                         decoration: InputDecoration(
-                          filled: true, //<-- SEE HERE
-                          fillColor: Colors.grey[300],
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10)
                           ),
+                          labelText: 'Password ',
                           suffixIcon: IconButton(
                             icon: Icon(
                               visiblePassowrd
@@ -133,12 +212,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             onPressed: () {
                               setState(() {
-                                print("email $email , passwd $password");
                                 visiblePassowrd = !visiblePassowrd;
                               });
                             },
                           ),
-                          labelText: 'Password ',
                         ),
                         obscureText: visiblePassowrd,
                       ),
@@ -148,61 +225,55 @@ class _LoginPageState extends State<LoginPage> {
                       height: 20,
                     ),
 
+
+
+
+
+
                     Padding(padding: EdgeInsets.only(top: 10,left: 100,right: 100),
                       child: Container(
                         width:  double.infinity,
                         height: main_Height * 0.05,
                         decoration: BoxDecoration(
                           color: Color(0xFF076799),
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-
                         child: ElevatedButton(
-                          onPressed: () async {
-                            _formKey.currentState!.save();
+                          onPressed: () {
 
-                            Text("emal : $email");
-                            Text("pass : $password");
-
-                            if(email == "abc@gmail.com" && password == "Abc@123"){
-
-                              var sharedpef = await SharedPreferences.getInstance();
-                              sharedpef.setBool(SplashState.KeyLogIn, true);
-                              Navigator.push(context, PageTransition(type: PageTransitionType.leftToRight, child: Dashboard()));
-                              // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard()));
-                            }else{
-
-                              final snackBar = SnackBar(
-                                content: const Text('Wrong Id or Password!'),
-                                backgroundColor: Color(0xFF076799),
-                                action: SnackBarAction(
-                                  label: 'dismiss',
-                                  onPressed: () {
-                                  },
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Dashboard()));
 
 
-                            }
+                            // FocusManager.instance.primaryFocus?.unfocus();
+                            // if (_formKey.currentState!.validate()) {
+                            //   _formKey.currentState!.save();
+                            //   loginBloc
+                            //       .add(PostLoginDataEvent(email!, password!));
+                            // }
+                            //
+                            // print("email : $email , password $password");
+                            //
+
+                            Navigator.of(context).push
+                              (MaterialPageRoute(builder: (context)=>Dashboard()));
+
+
                           },
                           child: Text(
                             "Log In",
                             style: TextStyle(
-                              fontSize: 18,
-                              letterSpacing: 2
+                                fontSize: 18,
+                                letterSpacing: 2
                             ),
                           ),
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            primary: Color(0xFF076799),
+                            primary: Color(0xFF3182B3)
                           ),
                         ),
                       ),)
-
-
                   ],
                 ),
               ),
@@ -210,7 +281,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
-
     );
   }
+
 }

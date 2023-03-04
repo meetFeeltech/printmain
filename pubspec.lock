@@ -242,10 +242,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "4bef634684b2c7f3468c77c766c831229af829a0cd2d4ee6c1b99558bd14e5d2"
+      sha256: c224ac897bed083dabf11f238dd11a239809b446740be0c2044608c50029ffdf
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.8"
+    version: "2.0.9"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -276,10 +276,10 @@ packages:
     dependency: transitive
     description:
       name: html
-      sha256: d9793e10dbe0e6c364f4c59bf3e01fb33a9b2a674bc7a1081693dba0614b6269
+      sha256: "79d498e6d6761925a34ee5ea8fa6dfef38607781d2fa91e37523474282af55cb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.15.1"
+    version: "0.15.2"
   http:
     dependency: "direct main"
     description:
@@ -336,6 +336,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.8.0"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: c40f9ef51e5bffb4ce69ad2d8c8aad7bd47ec109c090521109b63a4e2bc27191
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   macos_window_utils:
     dependency: transitive
     description:
@@ -536,6 +544,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  rename:
+    dependency: "direct main"
+    description:
+      name: rename
+      sha256: b0d9407186d834ad73aba9938da95a20208c4be99f151d9f376ac62a08d08bad
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
+  screen_retriever:
+    dependency: transitive
+    description:
+      name: screen_retriever
+      sha256: "4931f226ca158123ccd765325e9fbf360bfed0af9b460a10f960f9bb13d58323"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.6"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -641,50 +665,50 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: "5f7dae40707df507325ee045d1a172aea9f449ac4244d7c52391dd97208eeef8"
+      sha256: "4319454a92fe5aea1e90ff68c17703a39517ab05dd3074c34c9553e5f7cbf414"
       url: "https://pub.dev"
     source: hosted
-    version: "20.4.51"
+    version: "20.4.52"
   syncfusion_flutter_datagrid:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_datagrid
-      sha256: d476c5163fdfaaded09de6f69320c410b6bfda88e4e1c7cff423c483e21d8727
+      sha256: "601b3822df4ce7fa14534ef616810579d877872e28903cbae980f76666bcb14e"
       url: "https://pub.dev"
     source: hosted
-    version: "20.4.51"
+    version: "20.4.52"
   syncfusion_flutter_datagrid_export:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_datagrid_export
-      sha256: a78c52b63009a3e63cd2e67d60c4f8aa2da11a7b5316a4147fac2fba70635836
+      sha256: bc3c4500032b580d943a3cce5d663658f50e10bd04d137bb8f0587b650e23b87
       url: "https://pub.dev"
     source: hosted
-    version: "20.4.51-beta"
+    version: "20.4.52-beta"
   syncfusion_flutter_pdf:
     dependency: transitive
     description:
       name: syncfusion_flutter_pdf
-      sha256: "16818789a55ffb28ffc2e9919c5861333b5a20a02c41f82298faef228b4421e3"
+      sha256: b3fe64d668e3ccdb03edde0e35a04d001d7ea710fb190b4c29d9982ab8dd6343
       url: "https://pub.dev"
     source: hosted
-    version: "20.4.51"
+    version: "20.4.52"
   syncfusion_flutter_xlsio:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_xlsio
-      sha256: e39fbd891ac0f92638010121b0f1d3f0a842a7077fcce77abf09f5263b6fde27
+      sha256: a23f38bbfc3266f6bd9531370976a1184c176a7b217e4fb6c60608429fae3b3f
       url: "https://pub.dev"
     source: hosted
-    version: "20.4.51-beta"
+    version: "20.4.52-beta"
   syncfusion_officecore:
     dependency: transitive
     description:
       name: syncfusion_officecore
-      sha256: "17cff6d45e781954a8a1d7f0a8f759106af6ae13492f4ea81e6289efee9350f0"
+      sha256: aef933b35a4c6eff044c8a9b992ad98bb9493d954d2ac7505c460fa2f53d458b
       url: "https://pub.dev"
     source: hosted
-    version: "20.4.51-beta"
+    version: "20.4.52-beta"
   term_glyph:
     dependency: transitive
     description:
@@ -813,15 +837,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.1"
-  window_size:
+  window_manager:
     dependency: "direct main"
     description:
-      path: "plugins/window_size"
-      ref: HEAD
-      resolved-ref: "6c66ad23ee79749f30a8eece542cf54eaf157ed8"
-      url: "https://github.com/google/flutter-desktop-embedding"
-    source: git
-    version: "0.1.0"
+      name: window_manager
+      sha256: "492806c69879f0d28e95472bbe5e8d5940ac8c6e99cc07052fe14946974555ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   xdg_directories:
     dependency: transitive
     description:

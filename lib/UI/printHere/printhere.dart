@@ -7,6 +7,8 @@ import 'package:printing/printing.dart';
 import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:intl/intl.dart';
 
+import '../../commonWidget/themeHelper.dart';
+
 
 class PrintHere extends StatefulWidget {
   final String a1, a2, a3, a4, a5, a6;
@@ -416,16 +418,33 @@ class _PrintHereState extends State<PrintHere> {
 
    if(ab == true){
 
-     final snackBar = SnackBar(
-       duration: Duration(seconds: 2),
-       content: const Text("Print Successfully!"),
-       backgroundColor: Color(0xFF076799),
-       action: SnackBarAction(
-         label: 'dismiss',
-         onPressed: () {},
-       ),
-     );
-     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+     // final snackBar = SnackBar(
+     //   duration: Duration(seconds: 2),
+     //   content: const Text("Print Successfully!"),
+     //   backgroundColor: Color(0xFF076799),
+     //   action: SnackBarAction(
+     //     label: 'dismiss',
+     //     onPressed: () {},
+     //   ),
+     // );
+     // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+
+
+     final main_width = MediaQuery.of(context).size.width;
+
+     ThemeHelper.customDialogForMessage(
+         isBarrierDismissible: false,
+         context,
+         "Print Successful!",
+         main_width * 0.25,
+         // contentMessage: contentMes,
+             () {
+           // Navigator.of(context).pop('refresh');
+           Navigator.of(context).pop();
+           // Navigator.of(context).pop('refresh');
+         },
+         ForSuccess: true);
 
    }else{
 
