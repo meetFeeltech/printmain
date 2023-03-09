@@ -122,7 +122,7 @@ class ThemeHelper{
   static Widget buildCommonInitialWidgetScreen() {
     return const Scaffold(
       body: Center(
-        child: Text("helllooooooo"),
+        child: Text("something went Wrong!"),
       ),
     );
   }

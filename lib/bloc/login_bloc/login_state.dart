@@ -19,6 +19,7 @@ class PostLoginDataEventState extends LoginScreenStates {
 
 class APIFailureState extends LoginScreenStates {
   final Exception exception;
-
   APIFailureState(this.exception);
+
+
 }

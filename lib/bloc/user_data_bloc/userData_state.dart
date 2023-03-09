@@ -11,7 +11,6 @@ class AllFetchDataForUserDataPageState extends UserDataPageState{
   AllFetchDataForUserDataPageState(this.alluserModel);
 }
 
-
 class UserDataPageLoadingState extends  UserDataPageState{
   final bool showProgress;
   UserDataPageLoadingState(this.showProgress);

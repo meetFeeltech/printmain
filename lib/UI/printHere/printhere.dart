@@ -433,18 +433,18 @@ class _PrintHereState extends State<PrintHere> {
 
      final main_width = MediaQuery.of(context).size.width;
 
-     ThemeHelper.customDialogForMessage(
-         isBarrierDismissible: false,
-         context,
-         "Print Successful!",
-         main_width * 0.25,
-         // contentMessage: contentMes,
-             () {
-           // Navigator.of(context).pop('refresh');
-           Navigator.of(context).pop();
-           // Navigator.of(context).pop('refresh');
-         },
-         ForSuccess: true);
+     // ThemeHelper.customDialogForMessage(
+     //     isBarrierDismissible: false,
+     //     context,
+     //     "Print Successful!",
+     //     main_width * 0.25,
+     //     // contentMessage: contentMes,
+     //         () {
+     //       // Navigator.of(context).pop('refresh');
+     //       Navigator.of(context).pop();
+     //       // Navigator.of(context).pop('refresh');
+     //     },
+     //     ForSuccess: true);
 
    }else{
 

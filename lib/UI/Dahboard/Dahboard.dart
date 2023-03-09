@@ -2,15 +2,22 @@ import 'package:cheque_print/UI/Logprint/LogPrint.dart';
 import 'package:cheque_print/UI/USERS/users_data.dart';
 import 'package:cheque_print/UI/loginpage/loginpage.dart';
 import 'package:cheque_print/UI/printHere/printhere.dart';
+import 'package:cheque_print/api/api.dart';
+import 'package:cheque_print/model/post_excel_model.dart';
+import 'package:http/http.dart' as http;
 import 'package:cheque_print/commonWidget/themeHelper.dart';
+import 'package:cheque_print/network/api_client.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid_export/export.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
+import 'package:url_launcher/url_launcher.dart';
+import '../../bloc/Dashboard/Dashboard_bloc.dart';
 import '../../commonWidget/GridDataCommonFunc.dart';
 import 'package:cheque_print/helper/save_file_mobile.dart'
     if (dart.library.html) 'helper/save_file_web.dart' as helper;
@@ -37,6 +44,8 @@ import 'package:number_to_words_english/number_to_words_english.dart';
 import 'package:intl/intl.dart';
 
 import '../../commonWidget/themeHelper.dart';
+import '../../model/user_data_model.dart';
+import '../../network/repositary.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -46,11 +55,18 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+
+  DashboardBloc DBBloc = DashboardBloc(Repository.getInstance());
+
+  bool? bulkPrintPressed;
+
   late TableDataSource _tableDataSource;
 
   List<List<dynamic>> bulkprintData = [];
 
   List<List<dynamic>> rowdata1 = [];
+
+  Repository repositoryRepo = Repository(ApiClient(httpClient: http.Client()));
 
   List<dynamic> _row = [];
   String? filePath;
@@ -58,45 +74,19 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    // _row = getHolderData();
-    _tableDataSource = TableDataSource(context, x1: []);
+
+    print("init print");
+    loadui1();
+    _tableDataSource = TableDataSource(context, x1: [], DBBloc, repositoryRepo);
+  }
+
+  loadui1() async {
+    DBBloc.add(AllFetchDataForDashboardPageEvent());
+    // print("response $response");
   }
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
-  // Future<void> _exportDataGridToExcel() async {
-  //   // print("key : ${_key.currentState}");
-  //   final Workbook workbook = _key.currentState!.exportToExcelWorkbook();
-  //   final List<int> bytes = workbook.saveAsStream();
-  //   workbook.dispose();
-  //   await helper.saveAndLaunchFile(bytes, 'DataGrid.xlsx');
-  //
-  //   // final snackBar = SnackBar(
-  //   //   duration: Duration(seconds: 2),
-  //   //   content: const Text("Download Excel!"),
-  //   //   backgroundColor: Color(0xFF076799),
-  //   //   action: SnackBarAction(
-  //   //     label: 'dismiss',
-  //   //     onPressed: () {},
-  //   //   ),
-  //   // );
-  //   // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   final main_width = MediaQuery.of(context).size.width;
-  //
-  //   ThemeHelper.customDialogForMessage(
-  //       isBarrierDismissible: false,
-  //       context,
-  //       "Download Excel!",
-  //       main_width * 0.25,
-  //       // contentMessage: contentMes,
-  //           () {
-  //         // Navigator.of(context).pop('refresh');
-  //         Navigator.of(context).pop();
-  //         // Navigator.of(context).pop('refresh');
-  //       },
-  //       ForSuccess: true);
-  //
-  // }
 
   Future<void> createExcel1() async {
     // final snackBar = SnackBar(
@@ -380,14 +370,10 @@ class _DashboardState extends State<Dashboard> {
         }, ForSuccess: false);
       }
 
-      // final row = excel.tables[excel.tables.keys.first]!.rows
-      // .map((e) => e.map((e) => e!.value).toList())
-      // .toList();
-      // print("rows : ${row.elementAt(0)}");
-
+      
       print("only data : $rowdata1");
       print("only data : ${rowdata1.elementAt(0)}");
-      _tableDataSource = TableDataSource(context, x1: rowdata1);
+      _tableDataSource = TableDataSource(context, DBBloc,x1: rowdata1, repositoryRepo);
 
       print("all data $rowdata1");
       print("one data ${rowdata1.elementAt(1)}");
@@ -406,6 +392,7 @@ class _DashboardState extends State<Dashboard> {
     final img1 = await imageFromAssetBundle("assets/images/mm.png");
 
     for (int i = 0; i < bulkprintData.length; i++) {
+
       doc.addPage(
         pw.MultiPage(
             maxPages: 10,
@@ -489,6 +476,44 @@ class _DashboardState extends State<Dashboard> {
                   ])
                 ]),
       );
+
+      bool? tempBool;
+      if(bulkprintData[i]
+          .elementAt(5)
+          .toString() == "Yes" || bulkprintData[i]
+          .elementAt(5)
+          .toString() =="yes"){
+        tempBool = true;
+      }else {
+        tempBool = false;
+      }
+      DBBloc.add(PostExcelDataEvent(bulkprintData[i]
+          .elementAt(2)
+          .toString(),
+
+          bulkprintData[i]
+          .elementAt(1)
+          .toString(),
+          tempBool,
+          bulkprintData[i]
+              .elementAt(3)
+              .toString(),
+          bulkprintData[i]
+              .elementAt(4)
+              .toString()
+      )
+      );
+
+      // bulkprintData[i].remove(i);
+      // print("abc object are : ${bulkprintData.removeAt(0)}");
+      // bulkprintData.removeAt(i);
+
+      // print("abc object are : ${bulkprintData}");
+
+      // DBbloc2.add(PostExcelDataEvent(row.getCells()[2].value.toString(),row.getCells()[1].value.toString(), tempBool, row.getCells()[3].value.toString(),row.getCells()[4].value.toString()));
+
+      // row.getCells().remove(rows);
+
     }
 
     final ab = await Printing.layoutPdf(
@@ -497,6 +522,7 @@ class _DashboardState extends State<Dashboard> {
 
     print("nlkscnda ${ab}");
     print("nlkscnda ${ab.runtimeType}");
+
 
     if (ab == true) {
       print("abc");
@@ -514,22 +540,38 @@ class _DashboardState extends State<Dashboard> {
       //
       //
 
-      final main_width = MediaQuery.of(context).size.width;
 
-      ThemeHelper.customDialogForMessage(
-          isBarrierDismissible: false,
-          context,
-          "Bulk Print Successful!",
-          main_width * 0.25,
-          // contentMessage: contentMes,
-          () {
-        // Navigator.of(context).pop('refresh');
-        Navigator.of(context).pop();
-        // Navigator.of(context).pop('refresh');
-      }, ForSuccess: true);
+      if(bulkPrintPressed == true) {
+
+
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Dashboard()));
+
+        final main_width = MediaQuery.of(context).size.width;
+        TextSpan contentMes = TextSpan(
+            text: "Your data is moved to Print Log",style: TextStyle(color: Colors.grey, fontSize: 15,fontWeight: FontWeight.w600));
+
+        ThemeHelper.customDialogForMessage(
+            isBarrierDismissible: false,
+            context,
+            "Bulk Print Successful!",
+            main_width * 0.25,
+            contentMessage: contentMes,
+                () {
+              // Navigator.of(context).pop('refresh');
+              Navigator.of(context).pop();
+              // Navigator.of(context).pop('refresh');
+            }, ForSuccess: true);
+
+      }
+
+
     } else {
       print("xyz");
     }
+
+
+
   }
 
   DateTime currentTime = new DateTime.now();
@@ -538,13 +580,16 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     final main_width = MediaQuery.of(context).size.width;
     final main_height = MediaQuery.of(context).size.height;
+    
 
     return Scaffold(
+
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40),
         child: AppBar(
           // foregroundColor: Colors.black,
           leading: IconButton(
+            tooltip: "Logout",
             icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => {
               showDialog(
@@ -588,196 +633,307 @@ class _DashboardState extends State<Dashboard> {
           title: Text("FTS Bulk Cheque Printing Softwere"),
         ),
       ),
-      // endDrawer: Drawer(
-      //   child: Column(
-      //     children: [
-      //       UserAccountsDrawerHeader(
-      //           accountName: Text("cheque Holder"),
-      //           accountEmail: Text("abc@gmail.com")),
-      //       ListTile(
-      //         title: Text("User's Data"),
-      //         onTap: () {
-      //           Navigator.of(context).push(
-      //               MaterialPageRoute(builder: (context) => USER_Data_Here()));
-      //         },
-      //       ),
-      //       Divider(
-      //         color: Colors.black,
-      //         thickness: 2,
-      //       ),
-      //     ],
-      //   ),
-      // ),
 
-      // bottomSheet: Container(
-      //   height: main_height * 0.06,
-      //   width: main_height * 10,
-      //   decoration: BoxDecoration(
-      //     color: Color(0xFF3182B1)
-      //   ),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     children: [
-      //
-      //       Text("  Feeltech Solutions ",
-      //       style: TextStyle(
-      //         color: Colors.white,
-      //         fontSize: 22
-      //       ),),
-      //    Text("M - 9099240066, E -  connect@feeltechsolutions.com  ",
-      //      style: TextStyle(
-      //          color: Colors.white,
-      //          fontSize: 20
-      //      ),),
-      //     ],
-      //   ),
-      // ),
+      body:BlocProvider<DashboardBloc>(
+        create: (context) => DBBloc..add(DashboardInitialEvent()),
+        child: BlocConsumer<DashboardBloc, DashboardStates>(
+          builder: (context, state) {
+            if (state is DashboardLoadingState) {
+              return ThemeHelper.buildLoadingWidget();
+            } else {
+              return mainBodyData();
+            }
+          },
+          listener: (context, state) async {
+            if (state is APIFailureState) {
 
-      body: Column(
+              CircularProgressIndicator();
+              // ThemeHelper.toastForAPIFaliure(state.exception.toString());
+
+
+            } else if (state is PostExcelDataEventState) {
+              print("------------------------");
+
+
+
+            }
+          },
+        ),
+      ),
+
+    );
+
+  }
+
+  Widget mainBodyData(){
+
+    final main_width = MediaQuery.of(context).size.width;
+    final main_height = MediaQuery.of(context).size.height;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 5),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10),
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            padding: const EdgeInsets.only(left: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "CHEQUE DETAILS : ",
-                      softWrap: false,
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                Text(
+                  "CHEQUE DETAILS : ",
+                  softWrap: false,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border:
-                                  Border.all(width: 3, color: Colors.black)),
-                          height: main_height * 0.73,
-                          child: SfDataGridTheme(
-                            data: SfDataGridThemeData(
-                              headerColor: Color(0xFF3182B3),
-                            ),
-                            child: SfDataGrid(
-                              key: _key,
-                              // shrinkWrapRows: true,
-                              allowFiltering: true,
-                              allowSorting: true,
-                              gridLinesVisibility: GridLinesVisibility.both,
-                              headerGridLinesVisibility:
-                                  GridLinesVisibility.both,
-                              rowHeight: 35,
-                              headerRowHeight: 35,
-                              footerHeight: 30,
-                              // isScrollbarAlwaysShown: true,
-                              source: _tableDataSource,
-                              columns: [
-                                GridDataCommonFunc.tableColumnsDataLayout(
-                                    columnName: 'SR-NO',
-                                    toolTipMessage: 'SR-NO',
-                                    columnTitle: 'SR-NO',
-                                    columnWidthModeData:
-                                        ColumnWidthMode.fitByColumnName),
-                                GridDataCommonFunc.tableColumnsDataLayout(
-                                    columnName: 'CHEQUE-DATE',
-                                    toolTipMessage: 'CHEQUE-DATE',
-                                    columnTitle: 'CHEQUE-DATE',
-                                    columnWidthModeData: ColumnWidthMode.fill),
-                                GridDataCommonFunc.tableColumnsDataLayout(
-                                    columnName: 'CHEQUE-NO',
-                                    toolTipMessage: 'CHEQUE-NO',
-                                    columnTitle: 'CHEQUE-NO',
-                                    columnWidthModeData: ColumnWidthMode.fill),
-                                GridDataCommonFunc.tableColumnsDataLayout(
-                                    columnName: 'Amount',
-                                    toolTipMessage: 'Amount',
-                                    columnTitle: 'Amount',
-                                    columnWidthModeData: ColumnWidthMode.fill),
-                                GridDataCommonFunc.tableColumnsDataLayout(
-                                    columnName: 'PAYEE-NAME',
-                                    toolTipMessage: 'PAYEE-NAME',
-                                    columnTitle: 'PAYEE-NAME',
-                                    columnWidthModeData: ColumnWidthMode.fill),
-                                GridDataCommonFunc.tableColumnsDataLayout(
-                                    columnName: 'AccountPay',
-                                    toolTipMessage: 'AccountPay',
-                                    columnTitle: 'AccountPay',
-                                    columnWidthModeData: ColumnWidthMode.fill),
-                                GridDataCommonFunc.tableColumnsDataLayout(
-                                    columnName: 'Action',
-                                    toolTipMessage: 'Action',
-                                    columnTitle: 'Action',
-                                    columnWidthModeData: ColumnWidthMode.fill),
-                              ],
-                            ),
-                          ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10,right: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border:
+                          Border.all(width: 3, color: Colors.black)),
+                      height: main_height * 0.73,
+                      child: SfDataGridTheme(
+                        data: SfDataGridThemeData(
+                          headerColor: Color(0xFF3182B3),
+                        ),
+                        child: SfDataGrid(
+                          key: _key,
+                          // shrinkWrapRows: true,
+                          allowFiltering: true,
+                          allowSorting: true,
+                          gridLinesVisibility: GridLinesVisibility.both,
+                          headerGridLinesVisibility:
+                          GridLinesVisibility.both,
+                          rowHeight: 35,
+                          headerRowHeight: 35,
+                          footerHeight: 30,
+                          // isScrollbarAlwaysShown: true,
+                          source: _tableDataSource,
+                          columns: [
+                            GridDataCommonFunc.tableColumnsDataLayout(
+                                columnName: 'SR-NO',
+                                toolTipMessage: 'SR-NO',
+                                columnTitle: 'SR-NO',
+                                columnWidthModeData:
+                                ColumnWidthMode.fitByColumnName),
+                            GridDataCommonFunc.tableColumnsDataLayout(
+                                columnName: 'CHEQUE-DATE',
+                                toolTipMessage: 'CHEQUE-DATE',
+                                columnTitle: 'CHEQUE-DATE',
+                                columnWidthModeData: ColumnWidthMode.fill),
+                            GridDataCommonFunc.tableColumnsDataLayout(
+                                columnName: 'CHEQUE-NO',
+                                toolTipMessage: 'CHEQUE-NO',
+                                columnTitle: 'CHEQUE-NO',
+                                columnWidthModeData: ColumnWidthMode.fill),
+                            GridDataCommonFunc.tableColumnsDataLayout(
+                                columnName: 'Amount',
+                                toolTipMessage: 'Amount',
+                                columnTitle: 'Amount',
+                                columnWidthModeData: ColumnWidthMode.fill),
+                            GridDataCommonFunc.tableColumnsDataLayout(
+                                columnName: 'PAYEE-NAME',
+                                toolTipMessage: 'PAYEE-NAME',
+                                columnTitle: 'PAYEE-NAME',
+                                columnWidthModeData: ColumnWidthMode.fill),
+                            GridDataCommonFunc.tableColumnsDataLayout(
+                                columnName: 'AccountPay',
+                                toolTipMessage: 'AccountPay',
+                                columnTitle: 'AccountPay',
+                                columnWidthModeData: ColumnWidthMode.fill),
+                            GridDataCommonFunc.tableColumnsDataLayout(
+                                columnName: 'Action',
+                                toolTipMessage: 'Action',
+                                columnTitle: 'Action',
+                                columnWidthModeData: ColumnWidthMode.fill),
+                          ],
                         ),
                       ),
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Container(
-                          width: main_width * 0.24,
-                          height: main_height * 0.73,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 3, color: Colors.black),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                height: 150,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(3),
-                                ),
-                                child: Image.asset("assets/images/icn.png"),
-                              ),
+                  ),
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Container(
+                      width: main_width * 0.24,
+                      height: main_height * 0.73,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(width: 3, color: Colors.black),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Image.asset("assets/images/icn.png"),
+                          ),
 
-                              Container(
-                                height: main_height * 0.065,
-                                width: main_width * 0.22,
+                          Container(
+                            height: main_height * 0.065,
+                            width: main_width * 0.22,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 0.000001,
+                                      color: Colors.grey),
+                                ],
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 5, right: 5, bottom: 5, top: 5),
+                              child: Container(
+                                height: main_height * 0.025,
+                                width: main_width * 0.20,
                                 decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                          blurRadius: 0.000001,
-                                          color: Colors.grey),
-                                    ],
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 5, right: 5, bottom: 5, top: 5),
-                                  child: Container(
-                                    height: main_height * 0.025,
+                                    color: Colors.blue[50],
+                                    borderRadius: BorderRadius.circular(7)),
+                                child: Column(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      // "abcbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                                      "${companyName.toString()}",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          Container(
+                            height: main_height * 0.06,
+                            width: main_width * 0.22,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 0.000001,
+                                      color: Colors.grey),
+                                ],
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5, bottom: 5, left: 10, right: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Total Cheque : ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16),
+                                  ),
+                                  Flexible(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Container(
+                                        height: main_height * 0.045,
+                                        width: main_width * 0.12,
+                                        decoration: BoxDecoration(
+                                            color: Colors.blue[50],
+                                            borderRadius:
+                                            BorderRadius.circular(7)),
+                                        child: Column(
+                                          // mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: 8,
+                                            ),
+                                            Text(
+                                              "${rowdata1.length}",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          Container(
+                            height: main_height * 0.095,
+                            width: main_width * 0.22,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 0.000001,
+                                      color: Colors.grey),
+                                ],
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 5, right: 5, bottom: 5, top: 3),
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 7),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Purchase Date : ",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: main_height * 0.045,
                                     width: main_width * 0.20,
                                     decoration: BoxDecoration(
                                         color: Colors.blue[50],
-                                        borderRadius: BorderRadius.circular(7)),
+                                        borderRadius:
+                                        BorderRadius.circular(7)),
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "FeelTech Solutions",
+                                          "${sDate.toString() != null ? sDate.toString().substring(0,10) : sDate.toString()}",
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w600),
@@ -785,568 +941,327 @@ class _DashboardState extends State<Dashboard> {
                                       ],
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-
-                              Container(
-                                height: main_height * 0.06,
-                                width: main_width * 0.22,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                          blurRadius: 0.000001,
-                                          color: Colors.grey),
-                                    ],
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 5, bottom: 5, left: 10, right: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Total Cheque : ",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16),
-                                      ),
-                                      Flexible(
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Container(
-                                            height: main_height * 0.045,
-                                            width: main_width * 0.12,
-                                            decoration: BoxDecoration(
-                                                color: Colors.blue[50],
-                                                borderRadius:
-                                                    BorderRadius.circular(7)),
-                                            child: Column(
-                                              // mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  width: 8,
-                                                ),
-                                                Text(
-                                                  "${rowdata1.length}",
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    fontSize: 22,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              Container(
-                                height: main_height * 0.095,
-                                width: main_width * 0.22,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                          blurRadius: 0.000001,
-                                          color: Colors.grey),
-                                    ],
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 5, right: 5, bottom: 5, top: 3),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 7),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Purchase Date : ",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: main_height * 0.045,
-                                        width: main_width * 0.20,
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue[50],
-                                            borderRadius:
-                                                BorderRadius.circular(7)),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "${currentTime.toString().substring(0, 10)}",
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              Container(
-                                height: main_height * 0.095,
-                                width: main_width * 0.22,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                          blurRadius: 0.000001,
-                                          color: Colors.grey),
-                                    ],
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 5, right: 5, bottom: 5, top: 3),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 7),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Today Date : ",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: main_height * 0.045,
-                                        width: main_width * 0.20,
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue[50],
-                                            borderRadius:
-                                                BorderRadius.circular(7)),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "${currentTime.toString().substring(0, 10)}",
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              Container(
-                                height: main_height * 0.095,
-                                width: main_width * 0.22,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                          blurRadius: 0.000001,
-                                          color: Colors.grey),
-                                    ],
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 5, right: 5, bottom: 5, top: 3),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 7),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Expire Date : ",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        height: main_height * 0.045,
-                                        width: main_width * 0.20,
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue[50],
-                                            borderRadius:
-                                                BorderRadius.circular(7)),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "${currentTime.toString().substring(0, 10)}",
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              // Column(
-                              //   mainAxisAlignment:
-                              //       MainAxisAlignment.start,
-                              //   crossAxisAlignment:
-                              //       CrossAxisAlignment.start,
-                              //   children: [
-                              //     SingleChildScrollView(
-                              //       scrollDirection: Axis.horizontal,
-                              //       child: Row(
-                              //         children: [
-                              //           Text(
-                              //             "User Name : ",
-                              //             style: TextStyle(
-                              //                 fontSize: 20,
-                              //                 fontWeight:
-                              //                     FontWeight.w600,
-                              //                 overflow: TextOverflow
-                              //                     .ellipsis),
-                              //           ),
-                              //           Text(
-                              //             "abc",
-                              //             style: TextStyle(
-                              //               fontSize: 20,
-                              //             ),
-                              //             overflow:
-                              //                 TextOverflow.ellipsis,
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //     SingleChildScrollView(
-                              //       scrollDirection: Axis.horizontal,
-                              //       child: Row(
-                              //         children: [
-                              //           Text(
-                              //             "Total Cheque : ",
-                              //             style: TextStyle(
-                              //                 fontSize: 20,
-                              //                 fontWeight:
-                              //                     FontWeight.w600,
-                              //                 overflow: TextOverflow
-                              //                     .ellipsis),
-                              //           ),
-                              //           Text(
-                              //             "${rowdata1.length}",
-                              //             style: TextStyle(
-                              //               fontSize: 20,
-                              //             ),
-                              //             overflow:
-                              //                 TextOverflow.ellipsis,
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //     SingleChildScrollView(
-                              //       scrollDirection: Axis.horizontal,
-                              //       child: Row(
-                              //         children: [
-                              //           Text(
-                              //             "Purchase Date : ",
-                              //             style: TextStyle(
-                              //                 fontSize: 20,
-                              //                 fontWeight:
-                              //                     FontWeight.w600,
-                              //                 overflow: TextOverflow
-                              //                     .ellipsis),
-                              //           ),
-                              //           Text(
-                              //             "${currentTime.toString().substring(0, 10)}",
-                              //             style: TextStyle(
-                              //               fontSize: 20,
-                              //             ),
-                              //             overflow:
-                              //                 TextOverflow.ellipsis,
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //     SingleChildScrollView(
-                              //       scrollDirection: Axis.horizontal,
-                              //       child: Row(
-                              //         children: [
-                              //           Text(
-                              //             "Today Date : ",
-                              //             style: TextStyle(
-                              //                 fontSize: 20,
-                              //                 fontWeight:
-                              //                     FontWeight.w600,
-                              //                 overflow: TextOverflow
-                              //                     .ellipsis),
-                              //           ),
-                              //           Text(
-                              //             "${currentTime.toString().substring(0, 10)}",
-                              //             style: TextStyle(
-                              //               fontSize: 20,
-                              //             ),
-                              //             overflow:
-                              //                 TextOverflow.ellipsis,
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //     SingleChildScrollView(
-                              //       scrollDirection: Axis.horizontal,
-                              //       child: Row(
-                              //         children: [
-                              //           Text(
-                              //             "Expire Date : ",
-                              //             style: TextStyle(
-                              //                 fontSize: 20,
-                              //                 fontWeight:
-                              //                     FontWeight.w600,
-                              //                 overflow: TextOverflow
-                              //                     .ellipsis),
-                              //           ),
-                              //           Text(
-                              //             "${currentTime.toString().substring(0, 10)}",
-                              //             style: TextStyle(
-                              //               fontSize: 20,
-                              //             ),
-                              //             overflow:
-                              //                 TextOverflow.ellipsis,
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          border:
-                              Border.all(width: 2.5, color: Color(0xFF43A047)),
-                          borderRadius: BorderRadius.circular(5)),
-                      height: main_height * 0.08,
-                      width: main_width * 0.19,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white, // Background color
-                        ),
-                        onPressed: () {
-                          _pickFile();
-                        },
-                        child: Text(
-                          "Browse Excel",
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xFF43A047),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: main_height * 0.08,
-                      width: main_width * 0.19,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          width: 2.5,
-                          color: Color(0xFFE53935),
-                        ),
-                      ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white, // Background color
-                        ),
-                        onPressed: () {
-                          _createPdf();
-                        },
-                        child: Text(
-                          "Bulk Print",
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.red[600],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border:
-                              Border.all(width: 2.5, color: Colors.black87)),
-                      height: main_height * 0.08,
-                      width: main_width * 0.19,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white, // Background color
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LogPrint()));
-                        },
-                        child: Text(
-                          "Print Cheque Log",
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border:
-                              Border.all(width: 2.5, color: Color(0xFF8E24AA))),
-                      height: main_height * 0.08,
-                      width: main_width * 0.19,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white, // Background color
-                        ),
-                        onPressed: createExcel,
-                        child: Text(
-                          "Get Sample Excel",
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.purple[600],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border:
-                              Border.all(width: 2.5, color: Color(0xFF1E88E5))),
-                      height: main_height * 0.08,
-                      width: main_width * 0.19,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white, // Background color
-                        ),
-                        onPressed: (){
-                          {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Row(
+
+                          Container(
+                            height: main_height * 0.095,
+                            width: main_width * 0.22,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 0.000001,
+                                      color: Colors.grey),
+                                ],
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 5, right: 5, bottom: 5, top: 3),
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 7),
+                                    child: Row(
                                       children: [
-                                        Text("Do you want to Logout?"),
+                                        Text(
+                                          "Today Date : ",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16),
+                                        ),
                                       ],
                                     ),
-                                    content: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  ),
+                                  Container(
+                                    height: main_height * 0.045,
+                                    width: main_width * 0.20,
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue[50],
+                                        borderRadius:
+                                        BorderRadius.circular(7)),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
                                       children: [
-                                        SizedBox(
-                                          width: 40,
+                                        Text(
+                                          "${cDate.toString() != null ? cDate.toString().substring(0,10) : cDate.toString()}",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w600),
                                         ),
-                                        ElevatedButton(
-                                            onPressed: () async {
-                                              // SharedPreferences pref = await SharedPreferences.getInstance();
-                                              // pref.clear();
-                                              Navigator.of(context).pushAndRemoveUntil(
-                                                  MaterialPageRoute(
-                                                      builder: (context) => LoginPage()),
-                                                      (route) => false);
-                                            },
-                                            child: Text("Yes")),
-                                        ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text("No")),
                                       ],
                                     ),
-                                    shadowColor: Colors.grey,
-                                  );
-                                });
-                          }
-                        },
-                        child: Text(
-                          "Log Out",
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.blue[600],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+
+                          Container(
+                            height: main_height * 0.095,
+                            width: main_width * 0.22,
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 0.000001,
+                                      color: Colors.grey),
+                                ],
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 5, right: 5, bottom: 5, top: 3),
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 7),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Expire Date : ",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: main_height * 0.045,
+                                    width: main_width * 0.20,
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue[50],
+                                        borderRadius:
+                                        BorderRadius.circular(7)),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "${eDate.toString() != null ? eDate.toString().substring(0,10) : eDate.toString()}",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                        ],
                       ),
                     ),
-
-                    // SizedBox(
-                    //   width: 10,
-                    // ),
-                    // Container(
-                    //   height: main_height * 0.08,
-                    //   width: main_width * 0.15,
-                    //   child: ElevatedButton(
-                    //     onPressed: _exportDataGridToExcel,
-                    //     child: Text(
-                    //       "Export Excel",
-                    //       maxLines: 1,
-                    //       overflow: TextOverflow.fade,
-                    //       softWrap: false,
-                    //       style: TextStyle(
-                    //         fontSize: 25,
-                    //         color: Colors.white,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10,right: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      border:
+                      Border.all(width: 2.5, color: Color(0xFF43A047)),
+                      borderRadius: BorderRadius.circular(5)),
+                  height: main_height * 0.08,
+                  width: main_width * 0.19,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white, // Background color
+                    ),
+                    onPressed: () {
+                      _pickFile();
+                    },
+                    child: Text(
+                      "Browse Excel",
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF43A047),
+                      ),
+                    ),
+                  ),
                 ),
+                Container(
+                  height: main_height * 0.08,
+                  width: main_width * 0.19,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                      width: 2.5,
+                      color: Color(0xFFE53935),
+                    ),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white, // Background color
+                    ),
+                    onPressed: () {
+                      bulkPrintPressed = true;
+                      _createPdf();
+
+
+                    },
+                    child: Text(
+                      "Bulk Print",
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.red[600],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border:
+                      Border.all(width: 2.5, color: Colors.black87)),
+                  height: main_height * 0.08,
+                  width: main_width * 0.19,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white, // Background color
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LogPrint()));
+                    },
+                    child: Text(
+                      "Print Cheque Log",
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border:
+                      Border.all(width: 2.5, color: Color(0xFF8E24AA))),
+                  height: main_height * 0.08,
+                  width: main_width * 0.19,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white, // Background color
+                    ),
+                    onPressed: createExcel,
+                    child: Text(
+                      "Get Sample Excel",
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.purple[600],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border:
+                      Border.all(width: 2.5, color: Color(0xFF1E88E5))),
+                  height: main_height * 0.08,
+                  width: main_width * 0.19,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.white, // Background color
+                    ),
+                    onPressed: (){
+                      {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Row(
+                                  children: [
+                                    Text("Do you want to Logout?"),
+                                  ],
+                                ),
+                                content: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    SizedBox(
+                                      width: 40,
+                                    ),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          // SharedPreferences pref = await SharedPreferences.getInstance();
+                                          // pref.clear();
+                                          Navigator.of(context).pushAndRemoveUntil(
+                                              MaterialPageRoute(
+                                                  builder: (context) => LoginPage()),
+                                                  (route) => false);
+                                        },
+                                        child: Text("Yes")),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("No")),
+                                  ],
+                                ),
+                                shadowColor: Colors.grey,
+                              );
+                            });
+                      }
+                    },
+                    child: Text(
+                      "Log Out",
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.blue[600],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // SizedBox(
+                //   width: 10,
+                // ),
+                // Container(
+                //   height: main_height * 0.08,
+                //   width: main_width * 0.15,
+                //   child: ElevatedButton(
+                //     onPressed: _exportDataGridToExcel,
+                //     child: Text(
+                //       "Export Excel",
+                //       maxLines: 1,
+                //       overflow: TextOverflow.fade,
+                //       softWrap: false,
+                //       style: TextStyle(
+                //         fontSize: 25,
+                //         color: Colors.white,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -1355,16 +1270,23 @@ class _DashboardState extends State<Dashboard> {
             width: main_height * 10,
             decoration: BoxDecoration(color: Color(0xFF3182B1)),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "  © FeelTech Solutions Pvt. Ltd.  |  M: 9099240066  |  E: connect@feeltechsolutions.com ",
-                  style: TextStyle(color: Colors.white, fontSize: 22),
+                InkWell(
+                  onTap: (){
+                    launch("https://feeltechsolutions.com/");
+                  },
+                  child: Text(
+                    "  www.feeltechsolutions.com ",
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
                 ),
-                // Text(
-                //   "M - 9099240066, E -  connect@feeltechsolutions.com  ",
-                //   style: TextStyle(color: Colors.white, fontSize: 20),
-                // ),
+
+                Text(
+                  "  © FeelTech Solutions Pvt. Ltd.  |  9099240066  |  connect@feeltechsolutions.com    ",
+                  style: TextStyle(color: Colors.white, fontSize: 22),
+                )
+
               ],
             ),
           )
@@ -1372,11 +1294,14 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
+
 }
 
 class TableDataSource extends DataGridSource {
   final BuildContext _context;
-  TableDataSource(this._context, {required x1}) {
+  final DashboardBloc DBbloc2;
+  final Repository repositoryRepo;
+  TableDataSource(this._context, this.DBbloc2,this.repositoryRepo, {required x1}) {
     // print("data here main: $x1");
     // print("data print : ${x1}");
     // print(" row of : ${dataGridRows.elementAt(0)}");
@@ -1414,7 +1339,7 @@ class TableDataSource extends DataGridSource {
       // print(" data of $ab");
 
       final a1 = row.getCells()[0].value.toString();
-      final a2 = row.getCells()[1].value.toString().substring(0, 10);
+      final a2 = row.getCells()[1].value.toString();
       final a3 = row.getCells()[2].value.toString();
       final a4 = row.getCells()[3].value.toString();
       final a5 = row.getCells()[4].value.toString();
@@ -1425,38 +1350,18 @@ class TableDataSource extends DataGridSource {
           child: dataGridCell.columnName == "AccountPay"
               ? SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          dataGridCell.value.toString(),
-                          softWrap: false,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        dataGridCell.value.toString(),
+                        softWrap: false,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
 
-                        // Expanded(
-                        //   child:SingleChildScrollView(
-                        //     scrollDirection: Axis.horizontal,
-                        //     child:  ElevatedButton(
-                        //         onPressed: () {
-                        //           Navigator.of(_context).push(MaterialPageRoute(
-                        //               builder: (context) => PrintHere(
-                        //                 a1: a1,
-                        //                 a2: a2,
-                        //                 a3: a3,
-                        //                 a4: a4,
-                        //                 a5: a5,
-                        //                 a6: a6,
-                        //               )));
-                        //         },
-                        //         child: Text("Print")),
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ),
+                    ],
+                  )
                 )
               : dataGridCell.columnName == "CHEQUE-DATE"
                   ? Text(
@@ -1481,35 +1386,34 @@ class TableDataSource extends DataGridSource {
                       : dataGridCell.columnName == "Action"
                           ? SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
-                              child: Expanded(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    IconButton(
-                                      tooltip: "Print",
-                                      iconSize: 26,
-                                      color: Colors.orange[300],
-                                      icon: const Icon(Icons.print_outlined),
-                                      onPressed: () {
-                                        _createPrint(row);
-                                      },
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    IconButton(
-                                      tooltip: "Preview",
-                                      iconSize: 26,
-                                      color: Colors.blue[300],
-                                      icon: const Icon(
-                                          Icons.remove_red_eye_outlined),
-                                      onPressed: () {
-                                        _displayPdf(row);
-                                      },
-                                    ),
-                                  ],
-                                ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    tooltip: "Print",
+                                    iconSize: 26,
+                                    color: Colors.orange[300],
+                                    icon: const Icon(Icons.print_outlined),
+                                    onPressed: () {
+                                      _createPrint(row);
+                                      rows.remove(row);
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  IconButton(
+                                    tooltip: "Preview",
+                                    iconSize: 26,
+                                    color: Colors.blue[300],
+                                    icon: const Icon(
+                                        Icons.remove_red_eye_outlined),
+                                    onPressed: () {
+                                      _displayPdf(row);
+                                    },
+                                  ),
+                                ],
                               ),
                             )
                           : Padding(
@@ -1594,9 +1498,9 @@ class TableDataSource extends DataGridSource {
                             .capitalize(),
                         maxLines: 2,
                         style: pw.TextStyle(
-                          fontSize: 12,
-                          font: pw.Font.times(),
-                          lineSpacing: 5,
+                          fontSize: 10,
+                          font: pw.Font.helvetica(),
+                          lineSpacing: 10,
                           letterSpacing: 1,
                           color: PdfColors.black,
                         ),
@@ -1695,9 +1599,9 @@ class TableDataSource extends DataGridSource {
                         .capitalize(),
                     maxLines: 2,
                     style: pw.TextStyle(
-                      fontSize: 12,
-                      font: pw.Font.times(),
-                      lineSpacing: 7,
+                      fontSize: 10,
+                      font: pw.Font.helvetica(),
+                      lineSpacing: 9,
                       letterSpacing: 1,
                       color: PdfColors.black,
                     ),
@@ -1741,18 +1645,43 @@ class TableDataSource extends DataGridSource {
       // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       final main_width = MediaQuery.of(_context).size.width;
-
+      TextSpan contentMes = TextSpan(
+          text: "Your data is moved to Print Log",style: TextStyle(color: Colors.grey, fontSize: 15,fontWeight: FontWeight.w600));
       ThemeHelper.customDialogForMessage(
           isBarrierDismissible: false,
           _context,
           "Print Successful!",
           main_width * 0.25,
-          // contentMessage: contentMes,
+          contentMessage: contentMes,
           () {
         // Navigator.of(context).pop('refresh');
         Navigator.of(_context).pop();
         // Navigator.of(context).pop('refresh');
       }, ForSuccess: true);
+
+      bool? tempBool;
+      if(row.getCells()[5].value.toString() == "Yes" || row.getCells()[5].value.toString() =="yes"){
+        tempBool = true;
+      }else {
+        tempBool = false;
+      }
+
+      // post_excel_model excelData = await repositoryRepo.logPostAPI('chequeprintlog',[
+      //   {
+      //     "chequeNo":row.getCells()[2].value.toString(),
+      //     "chequeDate":row.getCells()[1].value.toString(),
+      //     "isAccountPay":tempBool,
+      //     "chequeAmount":row.getCells()[3].value.toString(),
+      //     "chequePayname":row.getCells()[4].value.toString()}
+      // ]
+      // );
+      DBbloc2.add(PostExcelDataEvent(row.getCells()[2].value.toString(),row.getCells()[1].value.toString(), tempBool, row.getCells()[3].value.toString(),row.getCells()[4].value.toString()));
+
+      row.getCells().remove(rows);
+      print("object ki : ${row}");
+
     } else {}
+
   }
+
 }
