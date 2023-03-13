@@ -57,7 +57,7 @@ class _SignUpState extends State<SignUp> {
             ),
 
             Text(
-              "  © FeelTech Solutions Pvt. Ltd.  |  9099240066  |  connect@feeltechsolutions.com    ",
+              "  © FeelTech Solutions Pvt. Ltd.  |  +91 9687112390  |  connect@feeltechsolutions.com    ",
               style: TextStyle(color: Colors.white, fontSize: 22),
             )
 

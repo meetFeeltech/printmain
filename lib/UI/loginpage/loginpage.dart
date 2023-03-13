@@ -68,9 +68,6 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
-
-
-
             } else
               if (state is PostLoginDataEventState) {
 
@@ -115,13 +112,13 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: Text(
                 "  www.feeltechsolutions.com ",
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
 
             Text(
-              "  © FeelTech Solutions Pvt. Ltd.  |  9099240066  |  connect@feeltechsolutions.com    ",
-              style: TextStyle(color: Colors.white, fontSize: 22),
+              "  © FeelTech Solutions Pvt. Ltd.  |  +91 9687112390  |  connect@feeltechsolutions.com    ",
+              style: TextStyle(color: Colors.white, fontSize: 20),
             )
 
           ],

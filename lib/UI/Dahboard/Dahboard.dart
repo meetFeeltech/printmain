@@ -10,6 +10,7 @@ import 'package:cheque_print/network/api_client.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:number_to_words/number_to_words.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -55,7 +56,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-
   DashboardBloc DBBloc = DashboardBloc(Repository.getInstance());
 
   bool? bulkPrintPressed;
@@ -77,7 +77,8 @@ class _DashboardState extends State<Dashboard> {
 
     print("init print");
     loadui1();
-    _tableDataSource = TableDataSource(context, x1: [], DBBloc, repositoryRepo);
+    _tableDataSource =
+        TableDataSource(context, x1: [], DBBloc, repositoryRepo, rowdata1);
   }
 
   loadui1() async {
@@ -86,7 +87,6 @@ class _DashboardState extends State<Dashboard> {
   }
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
-
 
   Future<void> createExcel1() async {
     // final snackBar = SnackBar(
@@ -339,7 +339,6 @@ class _DashboardState extends State<Dashboard> {
           Navigator.of(context).pop();
           // Navigator.of(context).pop('refresh');
         }, ForSuccess: true);
-
       } catch (e) {
         // final snackBar = SnackBar(
         //   duration: Duration(seconds: 2),
@@ -370,10 +369,10 @@ class _DashboardState extends State<Dashboard> {
         }, ForSuccess: false);
       }
 
-      
       print("only data : $rowdata1");
       print("only data : ${rowdata1.elementAt(0)}");
-      _tableDataSource = TableDataSource(context, DBBloc,x1: rowdata1, repositoryRepo);
+      _tableDataSource = TableDataSource(
+          context, DBBloc, x1: rowdata1, repositoryRepo, rowdata1);
 
       print("all data $rowdata1");
       print("one data ${rowdata1.elementAt(1)}");
@@ -392,7 +391,6 @@ class _DashboardState extends State<Dashboard> {
     final img1 = await imageFromAssetBundle("assets/images/mm.png");
 
     for (int i = 0; i < bulkprintData.length; i++) {
-
       doc.addPage(
         pw.MultiPage(
             maxPages: 10,
@@ -418,7 +416,7 @@ class _DashboardState extends State<Dashboard> {
                                     color: PdfColors.black,
                                   ))),
                           pw.Positioned(
-                              top: 0,
+                              top: 12,
                               left: 12,
                               child: pw.SizedBox(
                                   height: 50,
@@ -444,12 +442,13 @@ class _DashboardState extends State<Dashboard> {
                                   ))),
                           pw.Positioned(
                               top: 80,
-                              left: 78,
+                              left: 81,
                               child: pw.Container(
                                 height: 50,
                                 width: 500,
                                 child: pw.Text(
-                                  "${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only"
+                                  "${NumberToWord().convert('en-in', int.parse(bulkprintData[i].elementAt(3).toString()))} only"
+                                      // "${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only"
                                       .capitalize(),
                                   maxLines: 2,
                                   style: pw.TextStyle(
@@ -478,31 +477,18 @@ class _DashboardState extends State<Dashboard> {
       );
 
       bool? tempBool;
-      if(bulkprintData[i]
-          .elementAt(5)
-          .toString() == "Yes" || bulkprintData[i]
-          .elementAt(5)
-          .toString() =="yes"){
+      if (bulkprintData[i].elementAt(5).toString() == "Yes" ||
+          bulkprintData[i].elementAt(5).toString() == "yes") {
         tempBool = true;
-      }else {
+      } else {
         tempBool = false;
       }
-      DBBloc.add(PostExcelDataEvent(bulkprintData[i]
-          .elementAt(2)
-          .toString(),
-
-          bulkprintData[i]
-          .elementAt(1)
-          .toString(),
+      DBBloc.add(PostExcelDataEvent(
+          bulkprintData[i].elementAt(2).toString(),
+          bulkprintData[i].elementAt(1).toString(),
           tempBool,
-          bulkprintData[i]
-              .elementAt(3)
-              .toString(),
-          bulkprintData[i]
-              .elementAt(4)
-              .toString()
-      )
-      );
+          bulkprintData[i].elementAt(3).toString(),
+          bulkprintData[i].elementAt(4).toString()));
 
       // bulkprintData[i].remove(i);
       // print("abc object are : ${bulkprintData.removeAt(0)}");
@@ -513,7 +499,6 @@ class _DashboardState extends State<Dashboard> {
       // DBbloc2.add(PostExcelDataEvent(row.getCells()[2].value.toString(),row.getCells()[1].value.toString(), tempBool, row.getCells()[3].value.toString(),row.getCells()[4].value.toString()));
 
       // row.getCells().remove(rows);
-
     }
 
     final ab = await Printing.layoutPdf(
@@ -522,7 +507,6 @@ class _DashboardState extends State<Dashboard> {
 
     print("nlkscnda ${ab}");
     print("nlkscnda ${ab.runtimeType}");
-
 
     if (ab == true) {
       print("abc");
@@ -540,38 +524,26 @@ class _DashboardState extends State<Dashboard> {
       //
       //
 
+      final main_width = MediaQuery.of(context).size.width;
+      ThemeHelper.customDialogForMessage(
+          isBarrierDismissible: false,
+          context,
+          "Bulk Print Successful!",
+          main_width * 0.25,
+          // contentMessage: contentMes,
+          () {
+        // Navigator.of(context).pop('refresh');
+        Navigator.of(context).pop();
+        // Navigator.of(context).pop('refresh');
+      }, ForSuccess: true);
 
-      if(bulkPrintPressed == true) {
-
-
+      if (bulkPrintPressed == true) {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => Dashboard()));
-
-        final main_width = MediaQuery.of(context).size.width;
-        TextSpan contentMes = TextSpan(
-            text: "Your data is moved to Print Log",style: TextStyle(color: Colors.grey, fontSize: 15,fontWeight: FontWeight.w600));
-
-        ThemeHelper.customDialogForMessage(
-            isBarrierDismissible: false,
-            context,
-            "Bulk Print Successful!",
-            main_width * 0.25,
-            contentMessage: contentMes,
-                () {
-              // Navigator.of(context).pop('refresh');
-              Navigator.of(context).pop();
-              // Navigator.of(context).pop('refresh');
-            }, ForSuccess: true);
-
       }
-
-
     } else {
       print("xyz");
     }
-
-
-
   }
 
   DateTime currentTime = new DateTime.now();
@@ -580,10 +552,8 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     final main_width = MediaQuery.of(context).size.width;
     final main_height = MediaQuery.of(context).size.height;
-    
 
     return Scaffold(
-
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40),
         child: AppBar(
@@ -630,11 +600,10 @@ class _DashboardState extends State<Dashboard> {
             },
           ),
           backgroundColor: Color(0xFF3182B3),
-          title: Text("FTS Bulk Cheque Printing Softwere"),
+          title: Text("FTS Bulk Cheque Printing Software"),
         ),
       ),
-
-      body:BlocProvider<DashboardBloc>(
+      body: BlocProvider<DashboardBloc>(
         create: (context) => DBBloc..add(DashboardInitialEvent()),
         child: BlocConsumer<DashboardBloc, DashboardStates>(
           builder: (context, state) {
@@ -646,27 +615,31 @@ class _DashboardState extends State<Dashboard> {
           },
           listener: (context, state) async {
             if (state is APIFailureState) {
-
+              final main_width = MediaQuery.of(context).size.width;
+              ThemeHelper.customDialogForMessage(
+                  isBarrierDismissible: false,
+                  context,
+                  "${state.exception.toString().replaceAll("Exception: No Internet :", "").replaceAll("Exception: User Not Found :", "")}!",
+                  main_width * 0.25,
+                  // contentMessage: contentMes,
+                      () {
+                    // Navigator.of(context).pop('refresh');
+                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop('refresh');
+                  },
+                  ForSuccess: false);
               CircularProgressIndicator();
               // ThemeHelper.toastForAPIFaliure(state.exception.toString());
-
-
             } else if (state is PostExcelDataEventState) {
               print("------------------------");
-
-
-
             }
           },
         ),
       ),
-
     );
-
   }
 
-  Widget mainBodyData(){
-
+  Widget mainBodyData() {
     final main_width = MediaQuery.of(context).size.width;
     final main_height = MediaQuery.of(context).size.height;
 
@@ -694,7 +667,7 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 10,right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -705,8 +678,7 @@ class _DashboardState extends State<Dashboard> {
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          border:
-                          Border.all(width: 3, color: Colors.black)),
+                          border: Border.all(width: 3, color: Colors.black)),
                       height: main_height * 0.73,
                       child: SfDataGridTheme(
                         data: SfDataGridThemeData(
@@ -718,8 +690,7 @@ class _DashboardState extends State<Dashboard> {
                           allowFiltering: true,
                           allowSorting: true,
                           gridLinesVisibility: GridLinesVisibility.both,
-                          headerGridLinesVisibility:
-                          GridLinesVisibility.both,
+                          headerGridLinesVisibility: GridLinesVisibility.both,
                           rowHeight: 35,
                           headerRowHeight: 35,
                           footerHeight: 30,
@@ -731,7 +702,7 @@ class _DashboardState extends State<Dashboard> {
                                 toolTipMessage: 'SR-NO',
                                 columnTitle: 'SR-NO',
                                 columnWidthModeData:
-                                ColumnWidthMode.fitByColumnName),
+                                    ColumnWidthMode.fitByColumnName),
                             GridDataCommonFunc.tableColumnsDataLayout(
                                 columnName: 'CHEQUE-DATE',
                                 toolTipMessage: 'CHEQUE-DATE',
@@ -790,15 +761,13 @@ class _DashboardState extends State<Dashboard> {
                             ),
                             child: Image.asset("assets/images/icn.png"),
                           ),
-
                           Container(
                             height: main_height * 0.065,
                             width: main_width * 0.22,
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                      blurRadius: 0.000001,
-                                      color: Colors.grey),
+                                      blurRadius: 0.000001, color: Colors.grey),
                                 ],
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.white),
@@ -812,14 +781,10 @@ class _DashboardState extends State<Dashboard> {
                                     color: Colors.blue[50],
                                     borderRadius: BorderRadius.circular(7)),
                                 child: Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      // "abcbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
                                       "${companyName.toString()}",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w600),
@@ -829,15 +794,13 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                           ),
-
                           Container(
                             height: main_height * 0.06,
                             width: main_width * 0.22,
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                      blurRadius: 0.000001,
-                                      color: Colors.grey),
+                                      blurRadius: 0.000001, color: Colors.grey),
                                 ],
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.white),
@@ -846,7 +809,7 @@ class _DashboardState extends State<Dashboard> {
                                   top: 5, bottom: 5, left: 10, right: 10),
                               child: Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Total Cheque : ",
@@ -863,11 +826,11 @@ class _DashboardState extends State<Dashboard> {
                                         decoration: BoxDecoration(
                                             color: Colors.blue[50],
                                             borderRadius:
-                                            BorderRadius.circular(7)),
+                                                BorderRadius.circular(7)),
                                         child: Column(
                                           // mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                              CrossAxisAlignment.center,
                                           children: [
                                             SizedBox(
                                               width: 8,
@@ -889,15 +852,13 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                           ),
-
                           Container(
                             height: main_height * 0.095,
                             width: main_width * 0.22,
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                      blurRadius: 0.000001,
-                                      color: Colors.grey),
+                                      blurRadius: 0.000001, color: Colors.grey),
                                 ],
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.white),
@@ -906,7 +867,7 @@ class _DashboardState extends State<Dashboard> {
                                   left: 5, right: 5, bottom: 5, top: 3),
                               child: Column(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 7),
@@ -926,14 +887,13 @@ class _DashboardState extends State<Dashboard> {
                                     width: main_width * 0.20,
                                     decoration: BoxDecoration(
                                         color: Colors.blue[50],
-                                        borderRadius:
-                                        BorderRadius.circular(7)),
+                                        borderRadius: BorderRadius.circular(7)),
                                     child: Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "${sDate.toString() != null ? sDate.toString().substring(0,10) : sDate.toString()}",
+                                          "${sDate.toString() != null ? sDate.toString().substring(0, 10) : sDate.toString()}",
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w600),
@@ -945,15 +905,13 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                           ),
-
                           Container(
                             height: main_height * 0.095,
                             width: main_width * 0.22,
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                      blurRadius: 0.000001,
-                                      color: Colors.grey),
+                                      blurRadius: 0.000001, color: Colors.grey),
                                 ],
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.white),
@@ -962,7 +920,7 @@ class _DashboardState extends State<Dashboard> {
                                   left: 5, right: 5, bottom: 5, top: 3),
                               child: Column(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 7),
@@ -982,14 +940,13 @@ class _DashboardState extends State<Dashboard> {
                                     width: main_width * 0.20,
                                     decoration: BoxDecoration(
                                         color: Colors.blue[50],
-                                        borderRadius:
-                                        BorderRadius.circular(7)),
+                                        borderRadius: BorderRadius.circular(7)),
                                     child: Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "${cDate.toString() != null ? cDate.toString().substring(0,10) : cDate.toString()}",
+                                          "${cDate.toString() != null ? cDate.toString().substring(0, 10) : cDate.toString()}",
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w600),
@@ -1001,15 +958,13 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                           ),
-
                           Container(
                             height: main_height * 0.095,
                             width: main_width * 0.22,
                             decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                      blurRadius: 0.000001,
-                                      color: Colors.grey),
+                                      blurRadius: 0.000001, color: Colors.grey),
                                 ],
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.white),
@@ -1018,7 +973,7 @@ class _DashboardState extends State<Dashboard> {
                                   left: 5, right: 5, bottom: 5, top: 3),
                               child: Column(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 7),
@@ -1038,14 +993,13 @@ class _DashboardState extends State<Dashboard> {
                                     width: main_width * 0.20,
                                     decoration: BoxDecoration(
                                         color: Colors.blue[50],
-                                        borderRadius:
-                                        BorderRadius.circular(7)),
+                                        borderRadius: BorderRadius.circular(7)),
                                     child: Column(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "${eDate.toString() != null ? eDate.toString().substring(0,10) : eDate.toString()}",
+                                          "${eDate.toString() != null ? eDate.toString().substring(0, 10) : eDate.toString()}",
                                           style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w600),
@@ -1057,7 +1011,6 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                           ),
-
                         ],
                       ),
                     ),
@@ -1067,14 +1020,13 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 10,right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   decoration: BoxDecoration(
-                      border:
-                      Border.all(width: 2.5, color: Color(0xFF43A047)),
+                      border: Border.all(width: 2.5, color: Color(0xFF43A047)),
                       borderRadius: BorderRadius.circular(5)),
                   height: main_height * 0.08,
                   width: main_width * 0.19,
@@ -1114,8 +1066,6 @@ class _DashboardState extends State<Dashboard> {
                     onPressed: () {
                       bulkPrintPressed = true;
                       _createPdf();
-
-
                     },
                     child: Text(
                       "Bulk Print",
@@ -1132,8 +1082,7 @@ class _DashboardState extends State<Dashboard> {
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      border:
-                      Border.all(width: 2.5, color: Colors.black87)),
+                      border: Border.all(width: 2.5, color: Colors.black87)),
                   height: main_height * 0.08,
                   width: main_width * 0.19,
                   child: ElevatedButton(
@@ -1141,7 +1090,8 @@ class _DashboardState extends State<Dashboard> {
                       primary: Colors.white, // Background color
                     ),
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>LogPrint()));
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => LogPrint()));
                     },
                     child: Text(
                       "Print Cheque Log",
@@ -1158,8 +1108,7 @@ class _DashboardState extends State<Dashboard> {
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      border:
-                      Border.all(width: 2.5, color: Color(0xFF8E24AA))),
+                      border: Border.all(width: 2.5, color: Color(0xFF8E24AA))),
                   height: main_height * 0.08,
                   width: main_width * 0.19,
                   child: ElevatedButton(
@@ -1182,15 +1131,14 @@ class _DashboardState extends State<Dashboard> {
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      border:
-                      Border.all(width: 2.5, color: Color(0xFF1E88E5))),
+                      border: Border.all(width: 2.5, color: Color(0xFF1E88E5))),
                   height: main_height * 0.08,
                   width: main_width * 0.19,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: Colors.white, // Background color
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       {
                         showDialog(
                             context: context,
@@ -1202,7 +1150,8 @@ class _DashboardState extends State<Dashboard> {
                                   ],
                                 ),
                                 content: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     SizedBox(
                                       width: 40,
@@ -1211,9 +1160,11 @@ class _DashboardState extends State<Dashboard> {
                                         onPressed: () async {
                                           // SharedPreferences pref = await SharedPreferences.getInstance();
                                           // pref.clear();
-                                          Navigator.of(context).pushAndRemoveUntil(
-                                              MaterialPageRoute(
-                                                  builder: (context) => LoginPage()),
+                                          Navigator.of(context)
+                                              .pushAndRemoveUntil(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          LoginPage()),
                                                   (route) => false);
                                         },
                                         child: Text("Yes")),
@@ -1273,20 +1224,18 @@ class _DashboardState extends State<Dashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     launch("https://feeltechsolutions.com/");
                   },
                   child: Text(
                     "  www.feeltechsolutions.com ",
-                    style: TextStyle(color: Colors.white, fontSize: 24),
+                    style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                 ),
-
                 Text(
-                  "  © FeelTech Solutions Pvt. Ltd.  |  9099240066  |  connect@feeltechsolutions.com    ",
-                  style: TextStyle(color: Colors.white, fontSize: 22),
+                  "  © FeelTech Solutions Pvt. Ltd.  |  +91 9687112390  |  connect@feeltechsolutions.com    ",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 )
-
               ],
             ),
           )
@@ -1294,14 +1243,16 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-
 }
 
 class TableDataSource extends DataGridSource {
   final BuildContext _context;
   final DashboardBloc DBbloc2;
   final Repository repositoryRepo;
-  TableDataSource(this._context, this.DBbloc2,this.repositoryRepo, {required x1}) {
+  List<List<dynamic>> rowdata1;
+  TableDataSource(
+      this._context, this.DBbloc2, this.repositoryRepo, this.rowdata1,
+      {required x1}) {
     // print("data here main: $x1");
     // print("data print : ${x1}");
     // print(" row of : ${dataGridRows.elementAt(0)}");
@@ -1345,6 +1296,11 @@ class TableDataSource extends DataGridSource {
       final a5 = row.getCells()[4].value.toString();
       final a6 = row.getCells()[5].value.toString();
 
+      // var indiaFormat = NumberFormat.compactCurrency(locale: 'hi-IN');
+      // print("pesa : ${indiaFormat.format(1000000)}");//10L
+
+      // print("${NumberToWord().convert('en-in',int.parse(row.getCells()[3].value.toString()))} only");
+
       return Container(
           alignment: Alignment.center,
           child: dataGridCell.columnName == "AccountPay"
@@ -1359,10 +1315,8 @@ class TableDataSource extends DataGridSource {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-
                     ],
-                  )
-                )
+                  ))
               : dataGridCell.columnName == "CHEQUE-DATE"
                   ? Text(
                       dataGridCell.value.toString().substring(0, 10),
@@ -1397,7 +1351,7 @@ class TableDataSource extends DataGridSource {
                                     icon: const Icon(Icons.print_outlined),
                                     onPressed: () {
                                       _createPrint(row);
-                                      rows.remove(row);
+                                      // rows.remove(row);
                                     },
                                   ),
                                   SizedBox(
@@ -1494,7 +1448,7 @@ class TableDataSource extends DataGridSource {
                       height: 50,
                       width: 430,
                       child: pw.Text(
-                        "${NumberToWordsEnglish.convert(int.parse(row.getCells()[3].value.toString()))} only"
+                        "${NumberToWord().convert('en-in', int.parse(row.getCells()[3].value.toString()))} only"
                             .capitalize(),
                         maxLines: 2,
                         style: pw.TextStyle(
@@ -1568,7 +1522,7 @@ class TableDataSource extends DataGridSource {
                     ))),
 
             pw.Positioned(
-                top: 0,
+                top: 12,
                 left: 12,
                 child: pw.SizedBox(
                     height: 50,
@@ -1590,12 +1544,12 @@ class TableDataSource extends DataGridSource {
 
             pw.Positioned(
                 top: 80,
-                left: 78,
+                left: 81,
                 child: pw.Container(
                   height: 50,
                   width: 430,
                   child: pw.Text(
-                    "${NumberToWordsEnglish.convert(int.parse(row.getCells()[3].value.toString()))} only"
+                    "${NumberToWord().convert('en-in', int.parse(row.getCells()[3].value.toString()))} only"
                         .capitalize(),
                     maxLines: 2,
                     style: pw.TextStyle(
@@ -1645,14 +1599,13 @@ class TableDataSource extends DataGridSource {
       // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       final main_width = MediaQuery.of(_context).size.width;
-      TextSpan contentMes = TextSpan(
-          text: "Your data is moved to Print Log",style: TextStyle(color: Colors.grey, fontSize: 15,fontWeight: FontWeight.w600));
+
       ThemeHelper.customDialogForMessage(
           isBarrierDismissible: false,
           _context,
           "Print Successful!",
           main_width * 0.25,
-          contentMessage: contentMes,
+          // contentMessage: contentMes,
           () {
         // Navigator.of(context).pop('refresh');
         Navigator.of(_context).pop();
@@ -1660,9 +1613,10 @@ class TableDataSource extends DataGridSource {
       }, ForSuccess: true);
 
       bool? tempBool;
-      if(row.getCells()[5].value.toString() == "Yes" || row.getCells()[5].value.toString() =="yes"){
+      if (row.getCells()[5].value.toString() == "Yes" ||
+          row.getCells()[5].value.toString() == "yes") {
         tempBool = true;
-      }else {
+      } else {
         tempBool = false;
       }
 
@@ -1675,13 +1629,24 @@ class TableDataSource extends DataGridSource {
       //     "chequePayname":row.getCells()[4].value.toString()}
       // ]
       // );
-      DBbloc2.add(PostExcelDataEvent(row.getCells()[2].value.toString(),row.getCells()[1].value.toString(), tempBool, row.getCells()[3].value.toString(),row.getCells()[4].value.toString()));
 
+
+      DBbloc2.add(PostExcelDataEvent(
+          row.getCells()[2].value.toString(),
+          row.getCells()[1].value.toString(),
+          tempBool,
+          row.getCells()[3].value.toString(),
+          row.getCells()[4].value.toString()));
+
+      print("dcks : ${dataGridRows.indexOf(row) + 1}");
+      print("dcks : ${rows}");
       row.getCells().remove(rows);
+      rows.remove(row);
+
+      print("a nsdkll : ${dataGridRows.indexOf(row)}");
+
+      rowdata1.removeAt(dataGridRows.indexOf(row) + 1);
       print("object ki : ${row}");
-
     } else {}
-
   }
-
 }

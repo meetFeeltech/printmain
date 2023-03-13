@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import '../api/api.dart';
 import '../model/Excel_data_model.dart';
+import '../model/delete_model.dart';
 import '../model/login_model.dart';
 import '../model/post_excel_model.dart';
 import '../model/user_data_model.dart';
@@ -71,6 +72,16 @@ class Repository {
       Map<String, dynamic> json = await apiClient.apiCallPost(BASEURL, LogEndPoint, body,isBearer:true);
       post_excel_model loginResponse = post_excel_model.fromJson(json);
       return loginResponse;
+    } on CustomException {
+      rethrow;
+    }
+  }
+
+  Future<Delete_model>delLogData({required String id}) async {
+    try {
+      Map<String, dynamic> json = await apiClient.apiCallDel(BASEURL,"$DeleteEndPoint$id",isBearer:true);
+      Delete_model changePassModelRes = Delete_model.fromJson(json);
+      return changePassModelRes;
     } on CustomException {
       rethrow;
     }

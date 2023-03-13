@@ -19,6 +19,9 @@ const String LogEndPoint = "chequeprintlog";
 const String LoggetEndPoint = "getchequelog";
 
 
+const String DeleteEndPoint = "delete-print-log/";
+
+
 
 const String UserDataEndPoint = "get-user";
 

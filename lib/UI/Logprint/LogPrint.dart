@@ -1,4 +1,5 @@
 import 'package:cheque_print/bloc/PrintLog/PrintLog_bloc.dart';
+import 'package:cheque_print/model/delete_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -19,10 +20,13 @@ class LogPrint extends StatefulWidget {
 
 class _LogPrintState extends State<LogPrint> {
 
+  Delete_model? Delete_model_data;
+
 
   PrintLogBloc vacBloc = PrintLogBloc(Repository.getInstance());
 
   List<ExcelDataModel>? allcategorymodelData;
+
 
   late AllCategoryDataSource _allCategoryDataSource;
 
@@ -62,13 +66,13 @@ class _LogPrintState extends State<LogPrint> {
               },
               child: Text(
                 "  www.feeltechsolutions.com ",
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
 
             Text(
-              "  © FeelTech Solutions Pvt. Ltd.  |  9099240066  |  connect@feeltechsolutions.com    ",
-              style: TextStyle(color: Colors.white, fontSize: 22),
+              "  © FeelTech Solutions Pvt. Ltd.  |  +91 9687112390  |  connect@feeltechsolutions.com    ",
+              style: TextStyle(color: Colors.white, fontSize: 20),
             )
 
           ],
@@ -81,7 +85,7 @@ class _LogPrintState extends State<LogPrint> {
         preferredSize: Size.fromHeight(40),
         child: AppBar(
           backgroundColor: Color(0xFF3182B3),
-          title: Text("FTS Bulk Cheque Printing Softwere"),
+          title: Text("FTS Bulk Cheque Printing Software"),
         ),
       ),
 
@@ -91,10 +95,17 @@ class _LogPrintState extends State<LogPrint> {
           builder: (context, state) {
             if (state is PrintLogLoadingState) {
               return ThemeHelper.buildLoadingWidget();
-            } else if (state is AllFetchDataForPrintLogPageState) {
+            } else
+              if (state is AllFetchDataForPrintLogPageState) {
               allcategorymodelData = state.allCatoModel;
               _allCategoryDataSource =
-                  AllCategoryDataSource(allcategorymodelData!,context);
+                  AllCategoryDataSource(allcategorymodelData!,context,vacBloc);
+              return mainAllCategoryView();
+            } else if (state is DeleteLogDataState) {
+              Delete_model_data = state.deleteResponse;
+              allcategorymodelData = state.allCatoModel;
+              _allCategoryDataSource =
+                  AllCategoryDataSource(allcategorymodelData!,context,vacBloc);
               return mainAllCategoryView();
             } else {
               return ThemeHelper.buildCommonInitialWidgetScreen();
@@ -103,6 +114,23 @@ class _LogPrintState extends State<LogPrint> {
           listener: (context, state) {
             if (state is APIFailureState) {
               print(state.exception.toString());
+
+              final main_width = MediaQuery.of(context).size.width;
+
+              ThemeHelper.customDialogForMessage(
+                  isBarrierDismissible: false,
+                  context,
+                  "${state.exception.toString().replaceAll("Exception: No Internet :", "").replaceAll("Exception: User Not Found :", "")}!",
+                  main_width * 0.25,
+                  // contentMessage: contentMes,
+                      () {
+                    // Navigator.of(context).pop('refresh');
+                    Navigator.of(context).pop();
+                    // Navigator.of(context).pop('refresh');
+                  },
+                  ForSuccess: false);
+
+
             }
           },
         ),
@@ -152,6 +180,16 @@ class _LogPrintState extends State<LogPrint> {
                         columns: [
                           const GridSummaryColumn(
                               name: 'Sum',
+                              columnName: 'action',
+                              summaryType: GridSummaryType.count
+                          ),
+                          const GridSummaryColumn(
+                              name: 'Sum',
+                              columnName: 'id',
+                              summaryType: GridSummaryType.count
+                          ),
+                          const GridSummaryColumn(
+                              name: 'Sum',
                               columnName: 'chequeNo',
                               summaryType: GridSummaryType.count
                           ),
@@ -181,6 +219,21 @@ class _LogPrintState extends State<LogPrint> {
                   ],
 
                   columns: [
+
+                    GridDataCommonFunc.tableColumnsDataLayout(
+                        columnName: 'action',
+                        toolTipMessage: "action",
+                        columnTitle: "action",
+                        columnWidthModeData: ColumnWidthMode.fitByColumnName
+                    ),
+
+                    GridDataCommonFunc.tableColumnsDataLayout(
+                        columnName: 'id',
+                        toolTipMessage: "id",
+                        columnTitle: "id",
+                        columnWidthModeData: ColumnWidthMode.fill,
+                      visible: false,
+                    ),
 
                     GridDataCommonFunc.tableColumnsDataLayout(
                         columnName: 'chequeNo',
@@ -215,6 +268,8 @@ class _LogPrintState extends State<LogPrint> {
                     ),
 
                   ],
+
+
                 ),
               ),
             ),
@@ -237,10 +292,14 @@ class AllCategoryDataSource extends DataGridSource{
 
   late List<DataGridRow> dataGridRows;
 
+  final PrintLogBloc vacBloc;
 
-  AllCategoryDataSource(List<ExcelDataModel> machineProductionTargetData, this._context1) {
+
+  AllCategoryDataSource(List<ExcelDataModel> machineProductionTargetData, this._context1, this.vacBloc) {
     dataGridRows = machineProductionTargetData.map<DataGridRow>((dataGridRows) {
       return DataGridRow(cells: [
+        DataGridCell(columnName: "action", value: null),
+        DataGridCell(columnName: "id", value: dataGridRows.id),
         DataGridCell(columnName: "chequeNo", value: dataGridRows.chequeNo),
         DataGridCell(columnName: "chequeDate", value: dataGridRows.chequeDate),
         DataGridCell(columnName: "chequePayname", value: dataGridRows.chequePayname),
@@ -264,15 +323,19 @@ class AllCategoryDataSource extends DataGridSource{
       String summaryValue) {
     return Container(
       alignment: Alignment.center,
-      child: summaryColumn?.columnName == "chequeNo" ?
-      Text(
+      child:
+
+      summaryColumn?.columnName == "chequeNo" ? Text(
         summaryValue == ""
             ? "Total Cheque:  0"
             : "Total Cheque:  ${double.parse(summaryValue).toStringAsFixed(2)}",
         overflow: TextOverflow.ellipsis,
         style:
         const TextStyle(color: Colors.black, fontWeight: FontWeight.w800),
-      ) :summaryColumn?.columnName == "chequeAmount" ?
+      )
+
+
+          :summaryColumn?.columnName == "chequeAmount" ?
       Text(
         summaryValue == ""
             ? "Total Amount:  0"
@@ -312,7 +375,34 @@ class AllCategoryDataSource extends DataGridSource{
 
           return Container(
             alignment: Alignment.center,
-            child: dataGridCell.columnName=="isAccountPay" ?
+            child: dataGridCell.columnName=="action" ?
+            Align(
+              alignment: Alignment.center,
+              child: IconButton(
+                tooltip: "Delete",
+                iconSize: 26,
+                color: Colors.orange[300],
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  // print("abcejkc : ${row.getCells()[1].value.toString()}");
+                  vacBloc.add(DeleteLogEvent("${row.getCells()[1].value.toString()}"));
+                  final main_width = MediaQuery.of(_context1).size.width;
+                  ThemeHelper.customDialogForMessage(
+                      isBarrierDismissible: false,
+                      _context1,
+                      "Print Log Deleted!",
+                      main_width * 0.25,
+                      // contentMessage: contentMes,
+                          () {
+                        // Navigator.of(context).pop('refresh');
+                        Navigator.of(_context1).pop();
+                        // Navigator.of(context).pop('refresh');
+                      },
+                      ForSuccess: false);
+                },
+              ),
+            ) :
+            dataGridCell.columnName=="isAccountPay" ?
             Align(
               alignment: Alignment.center,
               child: Text(

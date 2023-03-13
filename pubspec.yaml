@@ -57,6 +57,7 @@ dependencies:
   rename: ^2.1.1
   intl:
   window_manager: ^0.3.1
+  number_to_words: ^1.0.0
 
 
 #  window_size:

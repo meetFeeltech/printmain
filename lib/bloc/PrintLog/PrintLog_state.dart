@@ -10,12 +10,20 @@ class AllFetchDataForPrintLogPageState extends PrintLogStates{
   AllFetchDataForPrintLogPageState(this.allCatoModel);
 }
 
+class DeleteLogDataState extends PrintLogStates {
+  final List<ExcelDataModel> allCatoModel;
+  Delete_model deleteResponse;
+  DeleteLogDataState(this.deleteResponse,this.allCatoModel);
+}
+
+
 
 class PrintLogLoadingState extends PrintLogStates {
   final bool showProgress;
 
   PrintLogLoadingState(this.showProgress);
 }
+
 
 class APIFailureState extends PrintLogStates {
   final Exception exception;

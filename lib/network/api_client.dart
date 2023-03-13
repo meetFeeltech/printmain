@@ -182,5 +182,74 @@ class ApiClient {
     }
   }
 
+
+  // DELAPICALL
+
+  Future<dynamic> apiCallDel(String baseUrl, String apiEndPoint, {dynamic putBody, bool? isBearer}) async {
+    var putResponseJson;
+    var getUrl;
+
+    getUrl ='$baseUrl$apiEndPoint';
+
+    var encodedBody = json.encode(putBody);
+
+
+    Map<String, String> headers;
+
+    print("herrreeeeee2");
+    if(isBearer == true){
+      headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken"
+      };
+    }else{
+      headers = {
+        "Content-Type": "application/json",
+        // "Authorization": "$accessToken"
+      };
+    }
+
+    // Map<String, String> headers = {
+    //   "Content-Type": "application/json",
+    //   "Authorization": "$accessToken"
+    // };
+
+    print("url: $getUrl, headers: $headers");
+    try {
+
+      var response = await httpClient!.delete(Uri.parse(getUrl), headers: headers, body: encodedBody);
+      print("response : ${response.body}");
+      putResponseJson = await _parseDelResponse(response);
+    } on SocketException {
+      throw FetchDataException("No Internet Connection");
+    }
+    return putResponseJson;
+  }
+
+  Future<dynamic> _parseDelResponse(http.Response response) async {
+    debugPrint("Put Api Response: ${response.body}");
+    print("status: ${response.statusCode}");
+
+    switch (response.statusCode) {
+      case 200:
+        var putResponseJson = json.decode(response.body);
+        return putResponseJson;
+
+      case 401:
+        throw UnAuthorizedException("Unauthorized access or Invalid credentials");
+
+      case 404:
+        throw DoesNotExistException("User Does Not Exist");
+
+      case 400:
+        throw ServerValidationError("hi");
+
+      default:
+        throw Exception("Something went Wrong");
+    }
+  }
+
+
+
 }
 
