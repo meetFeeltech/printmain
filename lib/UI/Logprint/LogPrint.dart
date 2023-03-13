@@ -79,13 +79,20 @@ class _LogPrintState extends State<LogPrint> {
         ),
       ),
 
-
-
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40),
         child: AppBar(
           backgroundColor: Color(0xFF3182B3),
           title: Text("FTS Bulk Cheque Printing Software"),
+          leading: IconButton(
+            tooltip: "Back",
+            iconSize: 26,
+            color: Colors.white,
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
       ),
 

@@ -527,7 +527,7 @@ class _DashboardState extends State<Dashboard> {
 
       final main_width = MediaQuery.of(context).size.width;
       ThemeHelper.customDialogForMessage(
-        autoRemoveDialog: true,
+        // autoRemoveDialog: true,
           isBarrierDismissible: false,
           context,
           "Bulk Print Successful!",
