@@ -118,6 +118,7 @@ class _LogPrintState extends State<LogPrint> {
               final main_width = MediaQuery.of(context).size.width;
 
               ThemeHelper.customDialogForMessage(
+                autoRemoveDialog: true,
                   isBarrierDismissible: false,
                   context,
                   "${state.exception.toString().replaceAll("Exception: No Internet :", "").replaceAll("Exception: User Not Found :", "")}!",
@@ -381,13 +382,14 @@ class AllCategoryDataSource extends DataGridSource{
               child: IconButton(
                 tooltip: "Delete",
                 iconSize: 26,
-                color: Colors.orange[300],
+                color: Colors.red[500],
                 icon: const Icon(Icons.delete),
                 onPressed: () {
                   // print("abcejkc : ${row.getCells()[1].value.toString()}");
                   vacBloc.add(DeleteLogEvent("${row.getCells()[1].value.toString()}"));
                   final main_width = MediaQuery.of(_context1).size.width;
                   ThemeHelper.customDialogForMessage(
+                    autoRemoveDialog: true,
                       isBarrierDismissible: false,
                       _context1,
                       "Print Log Deleted!",

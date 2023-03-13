@@ -26,7 +26,7 @@ class ThemeHelper{
         context: context,
         builder: (context) {
           autoRemoveDialog == true
-              ? Future.delayed(Duration(seconds: 2), () {
+              ? Future.delayed(Duration(seconds: 4), () {
             Navigator.of(context).pop(true);
           })
               : null ;

@@ -54,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
               final main_width = MediaQuery.of(context).size.width;
 
                 ThemeHelper.customDialogForMessage(
+                  autoRemoveDialog: true,
                     isBarrierDismissible: false,
                     context,
                     "${state.exception.toString().replaceAll("Exception: No Internet :", "").replaceAll("Exception: User Not Found :", "")}!",
