@@ -397,85 +397,96 @@ class _DashboardState extends State<Dashboard> {
         pw.MultiPage(
             maxPages: 10,
             margin: pw.EdgeInsets.all(0.0),
+            pageFormat: PdfPageFormat.a4,
             // clip: true,
-            pageFormat: PdfPageFormat(
-              22 * PdfPageFormat.cm,
-              8 * PdfPageFormat.cm,
-            ),
-            build: (pw.Context context) => <pw.Widget>[
+            // pageFormat: PdfPageFormat(
+            //   22 * PdfPageFormat.cm,
+            //   8 * PdfPageFormat.cm,
+            // ),
+            build: (pw.Context context) =>
+            <pw.Widget>[
               pw.Wrap(children: [
-                pw.Container(
-                    height: 8 * PdfPageFormat.cm,
-                    child: pw.Stack(children: [
-                      pw.Positioned(
-                          top: 22.5,
-                          left: 447,
-                          child: pw.Text(
-                              "${bulkprintData[i].elementAt(1).toString().replaceAll("-", "")}",
-                              style: pw.TextStyle(
-                                letterSpacing: 8,
-                                fontSize: 11,
-                                color: PdfColors.black,
-                              ))),
-                      pw.Positioned(
-                          top: 5,
-                          left: 18,
-                          child: pw.SizedBox(
-                              height: 50,
-                              width: 50,
-                              child: bulkprintData[i]
-                                  .elementAt(5)
-                                  .toString() ==
-                                  "Yes" ||
-                                  bulkprintData[i]
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.center,
+                  children: [
+                    pw.Transform.rotateBox(angle: 90/180 * pi,
+                    child:
+                    pw.Container(
+                        height: 9 * PdfPageFormat.cm,
+                        width: 22 * PdfPageFormat.cm,
+                        child: pw.Stack(children: [
+                          pw.Positioned(
+                              top: 17.5,
+                              left: 488,
+                              child: pw.Text(
+                                  "${bulkprintData[i].elementAt(1).toString().replaceAll("-", "")}",
+                                  style: pw.TextStyle(
+                                    letterSpacing: 8.5,
+                                    fontSize: 11,
+                                    color: PdfColors.black,
+                                  ))),
+                          pw.Positioned(
+                              top: 0,
+                              left: 53,
+                              child: pw.SizedBox(
+                                  height: 50,
+                                  width: 50,
+                                  child: bulkprintData[i]
                                       .elementAt(5)
                                       .toString() ==
-                                      "yes"
-                                  ? pw.Image(img1)
-                                  : pw.Text(""))),
-                      pw.Positioned(
-                          top: 55,
-                          left: 62,
-                          child: pw.Text("***${bulkprintData[i].elementAt(4)}***",
-                              style: pw.TextStyle(
-                                font: pw.Font.times(),
-                                fontWeight: pw.FontWeight.bold,
-                                fontSize: 12,
-                                color: PdfColors.black,
-                              ))),
-                      pw.Positioned(
-                          top: 80,
-                          left: 90,
-                          child: pw.Container(
-                            height: 50,
-                            width: 430,
-                            child: pw.Text(
-                              "***${NumberToWord().convert('en-in', int.parse(bulkprintData[i].elementAt(3).toString()))} only***"
-                              // "${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only"
-                                  .toUpperCase(),
-                              maxLines: 2,
-                              style: pw.TextStyle(
-                                font: pw.Font.times(),
-                                fontSize: 12,
-                                lineSpacing: 9,
-                                // letterSpacing: 1,
-                                fontWeight: pw.FontWeight.bold,
-                                color: PdfColors.black,
-                              ),
-                            ),
-                          )),
-                      pw.Positioned(
-                          top: 105,
-                          left: 448,
-                          child: pw.Text(
-                              "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(bulkprintData[i].elementAt(3).toString()))}"
-                                  .replaceAll("₹", ""),
-                              style: pw.TextStyle(
-                                // letterSpacing: 1,
-                                fontSize: 10,
-                                color: PdfColors.black,
-                              ))),
-                    ]))
+                                      "Yes" ||
+                                      bulkprintData[i]
+                                          .elementAt(5)
+                                          .toString() ==
+                                          "yes"
+                                      ? pw.Image(img1)
+                                      : pw.Text(""))),
+                          pw.Positioned(
+                              top: 51.5,
+                              left: 115,
+                              child: pw.Text("***${bulkprintData[i].elementAt(4)}***",
+                                  style: pw.TextStyle(
+                                    font: pw.Font.times(),
+                                    fontWeight: pw.FontWeight.bold,
+                                    fontSize: 12,
+                                    color: PdfColors.black,
+                                  ))),
+                          pw.Positioned(
+                              top: 77.5,
+                              left: 138,
+                              child: pw.Container(
+                                height: 50,
+                                width: 430,
+                                child: pw.Text(
+                                  "***${NumberToWord().convert('en-in', int.parse(bulkprintData[i].elementAt(3).toString()))} only***"
+                                  // "${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only"
+                                      .toUpperCase(),
+                                  maxLines: 2,
+                                  style: pw.TextStyle(
+                                    font: pw.Font.times(),
+                                    fontSize: 12,
+                                    lineSpacing: 9,
+                                    // letterSpacing: 1,
+                                    fontWeight: pw.FontWeight.bold,
+                                    color: PdfColors.black,
+                                  ),
+                                ),
+                              )),
+                          pw.Positioned(
+                              top: 97,
+                              left: 495,
+                              child: pw.Text(
+                                  "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(bulkprintData[i].elementAt(3).toString()))}"
+                                      .replaceAll("₹", ""),
+                                  style: pw.TextStyle(
+                                    // letterSpacing: 1,
+                                    fontSize: 10,
+                                    color: PdfColors.black,
+                                  ))),
+                        ]))
+                    )
+                  ]
+                )
               ])
             ]),
       );
@@ -1499,94 +1510,90 @@ class TableDataSource extends DataGridSource {
         // pageFormat: PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-          return pw.Transform.rotateBox(angle: -90 / 180 * pi,
-          child:
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.center,
-                    crossAxisAlignment: pw.CrossAxisAlignment.center,
-                    children:[
-                      pw.Container(
-                          color: PdfColors.red,
-                          // height:  8 * PdfPageFormat.cm,
-                          // width: 22 * PdfPageFormat.cm,
-                          child: pw.Stack(
-                              alignment: pw.Alignment.center,
-                              children: [
-                                //
-                                // pw.Container(
-                                //   child: pw.Center(
-                                //     child: pw.Image(img3),
-                                //   ),
-                                // ),
+          return pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.center,
+            children: [
+              pw.Transform.rotateBox(angle: 90 / 180 * pi,
+                  child: pw.Container(
+                      height: 9 * PdfPageFormat.cm,
+                      width: 22 * PdfPageFormat.cm,
+                      // color: PdfColors.blue,
+                      child: pw.Stack(
+                          children: [
+                            //
+                            // pw.Container(
+                            //   child: pw.Center(
+                            //     child: pw.Image(img3),
+                            //   ),
+                            // ),
+                            pw.Positioned(
+                                top: 17.5,
+                                left: 488,
+                                child: pw.Text(
+                                    "${row.getCells()[1].value.toString().replaceAll("-", "")}",
+                                    style: pw.TextStyle(
+                                      letterSpacing: 8.5,
+                                      fontSize: 11,
+                                      color: PdfColors.black,
+                                    ))),
 
-                                pw.Positioned(
-                                    top: 22.5,
-                                    left: 447,
-                                    child: pw.Text(
-                                        "${row.getCells()[1].value.toString().replaceAll("-", "")}",
-                                        style: pw.TextStyle(
-                                          letterSpacing: 8,
-                                          fontSize: 11,
-                                          color: PdfColors.black,
-                                        ))),
+                            pw.Positioned(
+                                top: 0,
+                                left: 53,
+                                child: pw.SizedBox(
+                                    height: 50,
+                                    width: 50,
+                                    child: row.getCells()[5].value.toString() == "Yes" ||
+                                        row.getCells()[5].value.toString() == "yes"
+                                        ? pw.Image(img1)
+                                        : pw.Text(""))),
 
-                                pw.Positioned(
-                                    top: 5,
-                                    left: 18,
-                                    child: pw.SizedBox(
-                                        height: 50,
-                                        width: 50,
-                                        child: row.getCells()[5].value.toString() == "Yes" ||
-                                            row.getCells()[5].value.toString() == "yes"
-                                            ? pw.Image(img1)
-                                            : pw.Text(""))),
+                            pw.Positioned(
+                                top: 51.5,
+                                left: 115,
+                                child: pw.Text("***${row.getCells()[4].value.toString()}***",
+                                    style: pw.TextStyle(
+                                      font: pw.Font.times(),
+                                      fontSize: 12,
+                                      fontWeight: pw.FontWeight.bold,
+                                      color: PdfColors.black,
+                                    ))),
 
-                                pw.Positioned(
-                                    top: 55,
-                                    left: 62,
-                                    child: pw.Text("***${row.getCells()[4].value.toString()}***",
-                                        style: pw.TextStyle(
-                                          font: pw.Font.times(),
-                                          fontSize: 12,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: PdfColors.black,
-                                        ))),
+                            pw.Positioned(
+                                top: 77.5,
+                                left: 138,
+                                child: pw.Container(
+                                  height: 50,
+                                  width: 430,
+                                  child: pw.Text(
+                                    "***${NumberToWord().convert('en-in', int.parse(row.getCells()[3].value.toString()))} only***"
+                                        .toUpperCase(),
+                                    maxLines: 2,
+                                    style: pw.TextStyle(
+                                      font: pw.Font.times(),
+                                      fontWeight: pw.FontWeight.bold,
+                                      fontSize: 12,
+                                      lineSpacing: 9,
+                                      // letterSpacing: 1,
+                                      color: PdfColors.black,
+                                    ),
+                                  ),
+                                )),
 
-                                pw.Positioned(
-                                    top: 80,
-                                    left: 90,
-                                    child: pw.Container(
-                                      height: 50,
-                                      width: 430,
-                                      child: pw.Text(
-                                        "***${NumberToWord().convert('en-in', int.parse(row.getCells()[3].value.toString()))} only***"
-                                            .toUpperCase(),
-                                        maxLines: 2,
-                                        style: pw.TextStyle(
-                                          font: pw.Font.times(),
-                                          fontWeight: pw.FontWeight.bold,
-                                          fontSize: 12,
-                                          lineSpacing: 9,
-                                          // letterSpacing: 1,
-                                          color: PdfColors.black,
-                                        ),
-                                      ),
-                                    )),
-
-                                pw.Positioned(
-                                    top: 105,
-                                    left: 448,
-                                    child: pw.Text(
-                                        "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(row.getCells()[3].value.toString()))}"
-                                            .replaceAll("₹", ""),
-                                        style: pw.TextStyle(
-                                          // letterSpacing: 1,
-                                          fontSize: 10,
-                                          color: PdfColors.black,
-                                        ))),
-                              ]))
-                    ]
-                  ));
+                            pw.Positioned(
+                                top: 97,
+                                left: 495,
+                                child: pw.Text(
+                                    "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(row.getCells()[3].value.toString()))}"
+                                        .replaceAll("₹", ""),
+                                    style: pw.TextStyle(
+                                      // letterSpacing: 1,
+                                      fontSize: 10,
+                                      color: PdfColors.black,
+                                    ))),
+                          ])))
+            ]
+          );
         },
       ),
     );
