@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cheque_print/UI/Logprint/LogPrint.dart';
 import 'package:cheque_print/UI/USERS/users_data.dart';
 import 'package:cheque_print/UI/loginpage/loginpage.dart';
@@ -21,7 +23,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../bloc/Dashboard/Dashboard_bloc.dart';
 import '../../commonWidget/GridDataCommonFunc.dart';
 import 'package:cheque_print/helper/save_file_mobile.dart'
-    if (dart.library.html) 'helper/save_file_web.dart' as helper;
+if (dart.library.html) 'helper/save_file_web.dart' as helper;
 import 'dart:io';
 import 'package:open_file/open_file.dart';
 import 'package:universal_html/html.dart' show AnchorElement;
@@ -149,14 +151,14 @@ class _DashboardState extends State<Dashboard> {
       print("trure here");
       AnchorElement(
           href:
-              'data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}')
+          'data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}')
         ..setAttribute('download', 'Output.xlsx')
         ..click();
     } else {
       print("false here ");
       final String path = (await getApplicationSupportDirectory()).path;
       final String fileName =
-          Platform.isWindows ? '$path\\Output.xlsx' : '$path/Output.xlsx';
+      Platform.isWindows ? '$path\\Output.xlsx' : '$path/Output.xlsx';
       final File file = File(fileName);
       await file.writeAsBytes(bytes);
       OpenFile.open(fileName);
@@ -329,17 +331,16 @@ class _DashboardState extends State<Dashboard> {
         // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
         ThemeHelper.customDialogForMessage(
-          autoRemoveDialog: true,
             isBarrierDismissible: false,
             context,
             "Excel Imported Successfully!",
             main_width * 0.25,
             // contentMessage: contentMes,
-            () {
-          // Navigator.of(context).pop('refresh');
-          Navigator.of(context).pop();
-          // Navigator.of(context).pop('refresh');
-        }, ForSuccess: true);
+                () {
+              // Navigator.of(context).pop('refresh');
+              Navigator.of(context).pop();
+              // Navigator.of(context).pop('refresh');
+            }, ForSuccess: true);
       } catch (e) {
         // final snackBar = SnackBar(
         //   duration: Duration(seconds: 2),
@@ -363,11 +364,11 @@ class _DashboardState extends State<Dashboard> {
             "Excel is not in Format!",
             main_width * 0.25,
             // contentMessage: contentMes,
-            () {
-          // Navigator.of(context).pop('refresh');
-          Navigator.of(context).pop();
-          // Navigator.of(context).pop('refresh');
-        }, ForSuccess: false);
+                () {
+              // Navigator.of(context).pop('refresh');
+              Navigator.of(context).pop();
+              // Navigator.of(context).pop('refresh');
+            }, ForSuccess: false);
       }
 
       print("only data : $rowdata1");
@@ -402,79 +403,81 @@ class _DashboardState extends State<Dashboard> {
               8 * PdfPageFormat.cm,
             ),
             build: (pw.Context context) => <pw.Widget>[
-                  pw.Wrap(children: [
-                    pw.Container(
-                        height: 8 * PdfPageFormat.cm,
-                        child: pw.Stack(children: [
-                          pw.Positioned(
-                              top: 21,
-                              left: 445,
-                              child: pw.Text(
-                                  "${bulkprintData[i].elementAt(1).toString().replaceAll("-", "")}",
-                                  style: pw.TextStyle(
-                                    letterSpacing: 8,
-                                    fontSize: 11,
-                                    color: PdfColors.black,
-                                  ))),
-                          pw.Positioned(
-                              top: 12,
-                              left: 12,
-                              child: pw.SizedBox(
-                                  height: 50,
-                                  width: 50,
-                                  child: bulkprintData[i]
-                                                  .elementAt(5)
-                                                  .toString() ==
-                                              "Yes" ||
-                                          bulkprintData[i]
-                                                  .elementAt(5)
-                                                  .toString() ==
-                                              "yes"
-                                      ? pw.Image(img1)
-                                      : pw.Text(""))),
-                          pw.Positioned(
-                              top: 55,
-                              left: 62,
-                              child: pw.Text("${bulkprintData[i].elementAt(4)}",
-                                  style: pw.TextStyle(
-                                    font: pw.Font.times(),
-                                    fontSize: 12,
-                                    color: PdfColors.black,
-                                  ))),
-                          pw.Positioned(
-                              top: 80,
-                              left: 81,
-                              child: pw.Container(
-                                height: 50,
-                                width: 500,
-                                child: pw.Text(
-                                  "${NumberToWord().convert('en-in', int.parse(bulkprintData[i].elementAt(3).toString()))} only"
-                                      // "${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only"
-                                      .capitalize(),
-                                  maxLines: 2,
-                                  style: pw.TextStyle(
-                                    fontSize: 12,
-                                    font: pw.Font.times(),
-                                    lineSpacing: 7,
-                                    letterSpacing: 1,
-                                    color: PdfColors.black,
-                                  ),
-                                ),
-                              )),
-                          pw.Positioned(
-                              top: 105,
-                              left: 443,
-                              child: pw.Text(
-                                  "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(bulkprintData[i].elementAt(3).toString()))}/-"
-                                      .replaceAll("₹", ""),
-                                  style: pw.TextStyle(
-                                    // letterSpacing: 1,
-                                    fontSize: 10,
-                                    color: PdfColors.black,
-                                  ))),
-                        ]))
-                  ])
-                ]),
+              pw.Wrap(children: [
+                pw.Container(
+                    height: 8 * PdfPageFormat.cm,
+                    child: pw.Stack(children: [
+                      pw.Positioned(
+                          top: 22.5,
+                          left: 447,
+                          child: pw.Text(
+                              "${bulkprintData[i].elementAt(1).toString().replaceAll("-", "")}",
+                              style: pw.TextStyle(
+                                letterSpacing: 8,
+                                fontSize: 11,
+                                color: PdfColors.black,
+                              ))),
+                      pw.Positioned(
+                          top: 5,
+                          left: 18,
+                          child: pw.SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: bulkprintData[i]
+                                  .elementAt(5)
+                                  .toString() ==
+                                  "Yes" ||
+                                  bulkprintData[i]
+                                      .elementAt(5)
+                                      .toString() ==
+                                      "yes"
+                                  ? pw.Image(img1)
+                                  : pw.Text(""))),
+                      pw.Positioned(
+                          top: 55,
+                          left: 62,
+                          child: pw.Text("***${bulkprintData[i].elementAt(4)}***",
+                              style: pw.TextStyle(
+                                font: pw.Font.times(),
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 12,
+                                color: PdfColors.black,
+                              ))),
+                      pw.Positioned(
+                          top: 80,
+                          left: 90,
+                          child: pw.Container(
+                            height: 50,
+                            width: 430,
+                            child: pw.Text(
+                              "***${NumberToWord().convert('en-in', int.parse(bulkprintData[i].elementAt(3).toString()))} only***"
+                              // "${NumberToWordsEnglish.convert(int.parse(bulkprintData[i].elementAt(3).toString()))} only"
+                                  .toUpperCase(),
+                              maxLines: 2,
+                              style: pw.TextStyle(
+                                font: pw.Font.times(),
+                                fontSize: 12,
+                                lineSpacing: 9,
+                                // letterSpacing: 1,
+                                fontWeight: pw.FontWeight.bold,
+                                color: PdfColors.black,
+                              ),
+                            ),
+                          )),
+                      pw.Positioned(
+                          top: 105,
+                          left: 448,
+                          child: pw.Text(
+                              "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(bulkprintData[i].elementAt(3).toString()))}"
+                                  .replaceAll("₹", ""),
+                              style: pw.TextStyle(
+                                // letterSpacing: 1,
+                                fontSize: 10,
+                                color: PdfColors.black,
+                              ))),
+                    ]))
+              ])
+            ]),
       );
 
       bool? tempBool;
@@ -503,7 +506,7 @@ class _DashboardState extends State<Dashboard> {
     }
 
     final ab = await Printing.layoutPdf(
-        // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
+      // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
         onLayout: (PdfPageFormat format) async => doc.save());
 
     print("nlkscnda ${ab}");
@@ -526,23 +529,26 @@ class _DashboardState extends State<Dashboard> {
       //
 
       final main_width = MediaQuery.of(context).size.width;
+      TextSpan contentMes = TextSpan(
+          text: "Data has moved to Print Log!",style: TextStyle(color: Colors.grey, fontSize: 15));
       ThemeHelper.customDialogForMessage(
-        // autoRemoveDialog: true,
           isBarrierDismissible: false,
           context,
           "Bulk Print Successful!",
           main_width * 0.25,
-          // contentMessage: contentMes,
-          () {
-        // Navigator.of(context).pop('refresh');
-        Navigator.of(context).pop();
-        // Navigator.of(context).pop('refresh');
-      }, ForSuccess: true);
+          contentMessage: contentMes,
+              () {
+            if (bulkPrintPressed == true) {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => Dashboard()));
+            }
+            else{
+              Navigator.of(context).pop();
+            }
+          }, ForSuccess: true);
 
-      if (bulkPrintPressed == true) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Dashboard()));
-      }
+
+
     } else {
       print("xyz");
     }
@@ -586,7 +592,7 @@ class _DashboardState extends State<Dashboard> {
                                 Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
                                         builder: (context) => LoginPage()),
-                                    (route) => false);
+                                        (route) => false);
                               },
                               child: Text("Yes")),
                           ElevatedButton(
@@ -617,20 +623,6 @@ class _DashboardState extends State<Dashboard> {
           },
           listener: (context, state) async {
             if (state is APIFailureState) {
-              final main_width = MediaQuery.of(context).size.width;
-              ThemeHelper.customDialogForMessage(
-                autoRemoveDialog: true,
-                  isBarrierDismissible: false,
-                  context,
-                  "${state.exception.toString().replaceAll("Exception: No Internet :", "").replaceAll("Exception: User Not Found :", "")}!",
-                  main_width * 0.25,
-                  // contentMessage: contentMes,
-                      () {
-                    // Navigator.of(context).pop('refresh');
-                    Navigator.of(context).pop();
-                    // Navigator.of(context).pop('refresh');
-                  },
-                  ForSuccess: false);
               CircularProgressIndicator();
               // ThemeHelper.toastForAPIFaliure(state.exception.toString());
             } else if (state is PostExcelDataEventState) {
@@ -705,7 +697,7 @@ class _DashboardState extends State<Dashboard> {
                                 toolTipMessage: 'SR-NO',
                                 columnTitle: 'SR-NO',
                                 columnWidthModeData:
-                                    ColumnWidthMode.fitByColumnName),
+                                ColumnWidthMode.fitByColumnName),
                             GridDataCommonFunc.tableColumnsDataLayout(
                                 columnName: 'CHEQUE-DATE',
                                 toolTipMessage: 'CHEQUE-DATE',
@@ -812,7 +804,7 @@ class _DashboardState extends State<Dashboard> {
                                   top: 5, bottom: 5, left: 10, right: 10),
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Total Cheque : ",
@@ -829,11 +821,11 @@ class _DashboardState extends State<Dashboard> {
                                         decoration: BoxDecoration(
                                             color: Colors.blue[50],
                                             borderRadius:
-                                                BorderRadius.circular(7)),
+                                            BorderRadius.circular(7)),
                                         child: Column(
                                           // mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                           children: [
                                             SizedBox(
                                               width: 8,
@@ -870,7 +862,7 @@ class _DashboardState extends State<Dashboard> {
                                   left: 5, right: 5, bottom: 5, top: 3),
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 7),
@@ -893,7 +885,7 @@ class _DashboardState extends State<Dashboard> {
                                         borderRadius: BorderRadius.circular(7)),
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           "${sDate.toString() != null ? sDate.toString().substring(0, 10) : sDate.toString()}",
@@ -923,7 +915,7 @@ class _DashboardState extends State<Dashboard> {
                                   left: 5, right: 5, bottom: 5, top: 3),
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 7),
@@ -946,7 +938,7 @@ class _DashboardState extends State<Dashboard> {
                                         borderRadius: BorderRadius.circular(7)),
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           "${cDate.toString() != null ? cDate.toString().substring(0, 10) : cDate.toString()}",
@@ -976,7 +968,7 @@ class _DashboardState extends State<Dashboard> {
                                   left: 5, right: 5, bottom: 5, top: 3),
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(left: 7),
@@ -999,7 +991,7 @@ class _DashboardState extends State<Dashboard> {
                                         borderRadius: BorderRadius.circular(7)),
                                     child: Column(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           "${eDate.toString() != null ? eDate.toString().substring(0, 10) : eDate.toString()}",
@@ -1154,7 +1146,7 @@ class _DashboardState extends State<Dashboard> {
                                 ),
                                 content: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
                                     SizedBox(
                                       width: 40,
@@ -1165,9 +1157,9 @@ class _DashboardState extends State<Dashboard> {
                                           // pref.clear();
                                           Navigator.of(context)
                                               .pushAndRemoveUntil(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          LoginPage()),
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      LoginPage()),
                                                   (route) => false);
                                         },
                                         child: Text("Yes")),
@@ -1261,20 +1253,20 @@ class TableDataSource extends DataGridSource {
     // print(" row of : ${dataGridRows.elementAt(0)}");
     dataGridRows = x1
         .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
-              DataGridCell<String>(
-                  columnName: 'SR-NO', value: dataGridRow[0].toString()),
-              DataGridCell<String>(
-                  columnName: 'CHEQUE-DATE', value: dataGridRow[1].toString()),
-              DataGridCell<String>(
-                  columnName: 'CHEQUE-NO', value: dataGridRow[2].toString()),
-              DataGridCell<String>(
-                  columnName: 'Amount', value: dataGridRow[3].toString()),
-              DataGridCell<String>(
-                  columnName: 'PAYEE-NAME', value: dataGridRow[4].toString()),
-              DataGridCell<String>(
-                  columnName: 'AccountPay', value: dataGridRow[5].toString()),
-              DataGridCell<String>(columnName: 'Action', value: null),
-            ]))
+      DataGridCell<String>(
+          columnName: 'SR-NO', value: dataGridRow[0].toString()),
+      DataGridCell<String>(
+          columnName: 'CHEQUE-DATE', value: dataGridRow[1].toString()),
+      DataGridCell<String>(
+          columnName: 'CHEQUE-NO', value: dataGridRow[2].toString()),
+      DataGridCell<String>(
+          columnName: 'Amount', value: dataGridRow[3].toString()),
+      DataGridCell<String>(
+          columnName: 'PAYEE-NAME', value: dataGridRow[4].toString()),
+      DataGridCell<String>(
+          columnName: 'AccountPay', value: dataGridRow[5].toString()),
+      DataGridCell<String>(columnName: 'Action', value: null),
+    ]))
         .toList();
   }
 
@@ -1287,27 +1279,27 @@ class TableDataSource extends DataGridSource {
   DataGridRowAdapter? buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((dataGridCell) {
-      String data = dataGridCell.value.toString();
-      // print("data here : ${dataGridCell.value}");
-      // print("data here : ${row.getCells()[0].value}");
-      // print(" data of $ab");
+          String data = dataGridCell.value.toString();
+          // print("data here : ${dataGridCell.value}");
+          // print("data here : ${row.getCells()[0].value}");
+          // print(" data of $ab");
 
-      final a1 = row.getCells()[0].value.toString();
-      final a2 = row.getCells()[1].value.toString();
-      final a3 = row.getCells()[2].value.toString();
-      final a4 = row.getCells()[3].value.toString();
-      final a5 = row.getCells()[4].value.toString();
-      final a6 = row.getCells()[5].value.toString();
+          final a1 = row.getCells()[0].value.toString();
+          final a2 = row.getCells()[1].value.toString();
+          final a3 = row.getCells()[2].value.toString();
+          final a4 = row.getCells()[3].value.toString();
+          final a5 = row.getCells()[4].value.toString();
+          final a6 = row.getCells()[5].value.toString();
 
-      // var indiaFormat = NumberFormat.compactCurrency(locale: 'hi-IN');
-      // print("pesa : ${indiaFormat.format(1000000)}");//10L
+          // var indiaFormat = NumberFormat.compactCurrency(locale: 'hi-IN');
+          // print("pesa : ${indiaFormat.format(1000000)}");//10L
 
-      // print("${NumberToWord().convert('en-in',int.parse(row.getCells()[3].value.toString()))} only");
+          // print("${NumberToWord().convert('en-in',int.parse(row.getCells()[3].value.toString()))} only");
 
-      return Container(
-          alignment: Alignment.center,
-          child: dataGridCell.columnName == "AccountPay"
-              ? SingleChildScrollView(
+          return Container(
+              alignment: Alignment.center,
+              child: dataGridCell.columnName == "AccountPay"
+                  ? SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1320,67 +1312,67 @@ class TableDataSource extends DataGridSource {
                       ),
                     ],
                   ))
-              : dataGridCell.columnName == "CHEQUE-DATE"
+                  : dataGridCell.columnName == "CHEQUE-DATE"
                   ? Text(
-                      dataGridCell.value.toString().substring(0, 10),
-                      // dataGridCell.value.toString(),
-                      overflow: TextOverflow.ellipsis,
-                    )
+                dataGridCell.value.toString().substring(0, 10),
+                // dataGridCell.value.toString(),
+                overflow: TextOverflow.ellipsis,
+              )
                   : dataGridCell.columnName == "Amount"
-                      ? Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                dataGridCell.value.toString(),
-                                textAlign: TextAlign.right,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        )
-                      : dataGridCell.columnName == "Action"
-                          ? SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    tooltip: "Print",
-                                    iconSize: 26,
-                                    color: Colors.orange[300],
-                                    icon: const Icon(Icons.print_outlined),
-                                    onPressed: () {
-                                      _createPrint(row);
-                                      // rows.remove(row);
-                                    },
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  IconButton(
-                                    tooltip: "Preview",
-                                    iconSize: 26,
-                                    color: Colors.blue[300],
-                                    icon: const Icon(
-                                        Icons.remove_red_eye_outlined),
-                                    onPressed: () {
-                                      _displayPdf(row);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: Text(
-                                dataGridCell.value.toString(),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ));
-    }).toList());
+                  ? Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      dataGridCell.value.toString(),
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              )
+                  : dataGridCell.columnName == "Action"
+                  ? SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      tooltip: "Print",
+                      iconSize: 26,
+                      color: Colors.orange[300],
+                      icon: const Icon(Icons.print_outlined),
+                      onPressed: () {
+                        _createPrint(row);
+                        // rows.remove(row);
+                      },
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    IconButton(
+                      tooltip: "Preview",
+                      iconSize: 26,
+                      color: Colors.blue[300],
+                      icon: const Icon(
+                          Icons.remove_red_eye_outlined),
+                      onPressed: () {
+                        _displayPdf(row);
+                      },
+                    ),
+                  ],
+                ),
+              )
+                  : Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Text(
+                  dataGridCell.value.toString(),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ));
+        }).toList());
   }
 
   void _displayPdf(DataGridRow row) async {
@@ -1397,84 +1389,86 @@ class TableDataSource extends DataGridSource {
     doc.addPage(
       pw.Page(
         pageFormat:
-            PdfPageFormat(19 * PdfPageFormat.cm, 8.61 * PdfPageFormat.cm)
-                .copyWith(
-                    marginTop: 0.0 * PdfPageFormat.cm,
-                    marginLeft: 0.0 * PdfPageFormat.cm),
+        PdfPageFormat(19 * PdfPageFormat.cm, 8.61 * PdfPageFormat.cm)
+            .copyWith(
+            marginTop: 0.0 * PdfPageFormat.cm,
+            marginLeft: 0.0 * PdfPageFormat.cm),
         build: (pw.Context context) {
           return pw.Container(
               child: pw.Stack(
                   fit: pw.StackFit.passthrough,
                   overflow: pw.Overflow.visible,
                   children: [
-                pw.Container(
-                  // height: 250,
-                  // width: 500,
-                  child: pw.Center(
-                    child: pw.Image(img5),
-                  ),
-                ),
-                pw.Positioned(
-                    top: 22,
-                    left: 407,
-                    child: pw.Text(
-                        "${row.getCells()[1].value.toString().replaceAll("-", "")}",
-                        style: pw.TextStyle(
-                          letterSpacing: 7,
-                          fontSize: 11,
-                          color: PdfColors.black,
-                        ))),
-                pw.Positioned(
-                  top: 0,
-                  left: 0,
-                  child: pw.SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: row.getCells()[5].value.toString() == "Yes" ||
-                              row.getCells()[5].value.toString() == "yes"
-                          ? pw.Image(img1)
-                          : pw.Text("")),
-                ),
-                pw.Positioned(
-                    top: 53.5,
-                    left: 42,
-                    child: pw.Text("${row.getCells()[4].value.toString()}",
-                        style: pw.TextStyle(
-                          font: pw.Font.times(),
-                          fontSize: 12,
-                          color: PdfColors.black,
-                        ))),
-                pw.Positioned(
-                    top: 77,
-                    left: 70,
-                    child: pw.Container(
-                      height: 50,
-                      width: 430,
-                      child: pw.Text(
-                        "${NumberToWord().convert('en-in', int.parse(row.getCells()[3].value.toString()))} only"
-                            .capitalize(),
-                        maxLines: 2,
-                        style: pw.TextStyle(
-                          fontSize: 10,
-                          font: pw.Font.helvetica(),
-                          lineSpacing: 10,
-                          letterSpacing: 1,
-                          color: PdfColors.black,
-                        ),
+                    pw.Container(
+                      // height: 250,
+                      // width: 500,
+                      child: pw.Center(
+                        child: pw.Image(img5),
                       ),
-                    )),
-                pw.Positioned(
-                    top: 98,
-                    left: 402,
-                    child: pw.Text(
-                        "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(row.getCells()[3].value.toString()))}"
-                            .replaceAll("₹", ""),
-                        style: pw.TextStyle(
-                          // letterSpacing: 1,
-                          fontSize: 10,
-                          color: PdfColors.black,
-                        ))),
-              ]));
+                    ),
+                    pw.Positioned(
+                        top: 22,
+                        left: 407,
+                        child: pw.Text(
+                            "${row.getCells()[1].value.toString().replaceAll("-", "")}",
+                            style: pw.TextStyle(
+                              letterSpacing: 7,
+                              fontSize: 11,
+                              color: PdfColors.black,
+                            ))),
+                    pw.Positioned(
+                      top: 0,
+                      left: 0,
+                      child: pw.SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: row.getCells()[5].value.toString() == "Yes" ||
+                              row.getCells()[5].value.toString() == "yes"
+                              ? pw.Image(img1)
+                              : pw.Text("")),
+                    ),
+                    pw.Positioned(
+                        top: 53.5,
+                        left: 42,
+                        child: pw.Text("***${row.getCells()[4].value.toString()}***",
+                            style: pw.TextStyle(
+                              font: pw.Font.times(),
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 10,
+                              color: PdfColors.black,
+                            ))),
+                    pw.Positioned(
+                        top: 77,
+                        left: 70,
+                        child: pw.Container(
+                          height: 50,
+                          width: 430,
+                          child: pw.Text(
+                            "***${NumberToWord().convert('en-in', int.parse(row.getCells()[3].value.toString()))} only***"
+                                .toUpperCase(),
+                            maxLines: 2,
+                            style: pw.TextStyle(
+                              fontSize: 10,
+                              font: pw.Font.times(),
+                              fontWeight: pw.FontWeight.bold,
+                              lineSpacing: 10,
+                              // letterSpacing: 1,
+                              color: PdfColors.black,
+                            ),
+                          ),
+                        )),
+                    pw.Positioned(
+                        top: 98,
+                        left: 402,
+                        child: pw.Text(
+                            "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(row.getCells()[3].value.toString()))}"
+                                .replaceAll("₹", ""),
+                            style: pw.TextStyle(
+                              // letterSpacing: 1,
+                              fontSize: 10,
+                              color: PdfColors.black,
+                            ))),
+                  ]));
         },
       ),
     );
@@ -1502,91 +1496,107 @@ class TableDataSource extends DataGridSource {
       pw.Page(
         margin: pw.EdgeInsets.all(0.0),
         // clip: true,
-        pageFormat: PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
+        // pageFormat: PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
+        pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-          return pw.Container(
-              child: pw.Stack(children: [
-            //
-            // pw.Container(
-            //   child: pw.Center(
-            //     child: pw.Image(img3),
-            //   ),
-            // ),
+          return pw.Transform.rotateBox(angle: -90 / 180 * pi,
+          child:
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    crossAxisAlignment: pw.CrossAxisAlignment.center,
+                    children:[
+                      pw.Container(
+                          color: PdfColors.red,
+                          // height:  8 * PdfPageFormat.cm,
+                          // width: 22 * PdfPageFormat.cm,
+                          child: pw.Stack(
+                              alignment: pw.Alignment.center,
+                              children: [
+                                //
+                                // pw.Container(
+                                //   child: pw.Center(
+                                //     child: pw.Image(img3),
+                                //   ),
+                                // ),
 
-            pw.Positioned(
-                top: 21,
-                left: 445,
-                child: pw.Text(
-                    "${row.getCells()[1].value.toString().replaceAll("-", "")}",
-                    style: pw.TextStyle(
-                      letterSpacing: 8,
-                      fontSize: 11,
-                      color: PdfColors.black,
-                    ))),
+                                pw.Positioned(
+                                    top: 22.5,
+                                    left: 447,
+                                    child: pw.Text(
+                                        "${row.getCells()[1].value.toString().replaceAll("-", "")}",
+                                        style: pw.TextStyle(
+                                          letterSpacing: 8,
+                                          fontSize: 11,
+                                          color: PdfColors.black,
+                                        ))),
 
-            pw.Positioned(
-                top: 12,
-                left: 12,
-                child: pw.SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: row.getCells()[5].value.toString() == "Yes" ||
-                            row.getCells()[5].value.toString() == "yes"
-                        ? pw.Image(img1)
-                        : pw.Text(""))),
+                                pw.Positioned(
+                                    top: 5,
+                                    left: 18,
+                                    child: pw.SizedBox(
+                                        height: 50,
+                                        width: 50,
+                                        child: row.getCells()[5].value.toString() == "Yes" ||
+                                            row.getCells()[5].value.toString() == "yes"
+                                            ? pw.Image(img1)
+                                            : pw.Text(""))),
 
-            pw.Positioned(
-                top: 55,
-                left: 62,
-                child: pw.Text("${row.getCells()[4].value.toString()}",
-                    style: pw.TextStyle(
-                      font: pw.Font.times(),
-                      fontSize: 12,
-                      color: PdfColors.black,
-                    ))),
+                                pw.Positioned(
+                                    top: 55,
+                                    left: 62,
+                                    child: pw.Text("***${row.getCells()[4].value.toString()}***",
+                                        style: pw.TextStyle(
+                                          font: pw.Font.times(),
+                                          fontSize: 12,
+                                          fontWeight: pw.FontWeight.bold,
+                                          color: PdfColors.black,
+                                        ))),
 
-            pw.Positioned(
-                top: 80,
-                left: 81,
-                child: pw.Container(
-                  height: 50,
-                  width: 430,
-                  child: pw.Text(
-                    "${NumberToWord().convert('en-in', int.parse(row.getCells()[3].value.toString()))} only"
-                        .capitalize(),
-                    maxLines: 2,
-                    style: pw.TextStyle(
-                      fontSize: 10,
-                      font: pw.Font.helvetica(),
-                      lineSpacing: 9,
-                      letterSpacing: 1,
-                      color: PdfColors.black,
-                    ),
-                  ),
-                )),
+                                pw.Positioned(
+                                    top: 80,
+                                    left: 90,
+                                    child: pw.Container(
+                                      height: 50,
+                                      width: 430,
+                                      child: pw.Text(
+                                        "***${NumberToWord().convert('en-in', int.parse(row.getCells()[3].value.toString()))} only***"
+                                            .toUpperCase(),
+                                        maxLines: 2,
+                                        style: pw.TextStyle(
+                                          font: pw.Font.times(),
+                                          fontWeight: pw.FontWeight.bold,
+                                          fontSize: 12,
+                                          lineSpacing: 9,
+                                          // letterSpacing: 1,
+                                          color: PdfColors.black,
+                                        ),
+                                      ),
+                                    )),
 
-            pw.Positioned(
-                top: 105,
-                left: 443,
-                child: pw.Text(
-                    "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(row.getCells()[3].value.toString()))}"
-                        .replaceAll("₹", ""),
-                    style: pw.TextStyle(
-                      // letterSpacing: 1,
-                      fontSize: 10,
-                      color: PdfColors.black,
-                    ))),
-          ]));
+                                pw.Positioned(
+                                    top: 105,
+                                    left: 448,
+                                    child: pw.Text(
+                                        "*** ${NumberFormat.simpleCurrency(locale: 'hi-In', decimalDigits: 2).format(int.parse(row.getCells()[3].value.toString()))}"
+                                            .replaceAll("₹", ""),
+                                        style: pw.TextStyle(
+                                          // letterSpacing: 1,
+                                          fontSize: 10,
+                                          color: PdfColors.black,
+                                        ))),
+                              ]))
+                    ]
+                  ));
         },
       ),
     );
 
     final ab = await Printing.layoutPdf(
-        // usePrinterSettings: true,
-        // dynamicLayout: true,
-        // format: PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm,
-        // marginTop: 0),
-        // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
+      // usePrinterSettings: true,
+      // dynamicLayout: true,
+      // format: PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm,
+      // marginTop: 0),
+      // format:  PdfPageFormat(22 * PdfPageFormat.cm, 8 * PdfPageFormat.cm),
         onLayout: (PdfPageFormat format) async => doc.save());
 
     if (ab == true) {
@@ -1602,18 +1612,19 @@ class TableDataSource extends DataGridSource {
       // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       final main_width = MediaQuery.of(_context).size.width;
-
+      TextSpan contentMes = TextSpan(
+          text: "Data has moved to Print Log!",style: TextStyle(color: Colors.grey, fontSize: 15));
       ThemeHelper.customDialogForMessage(
           isBarrierDismissible: false,
           _context,
           "Print Successful!",
           main_width * 0.25,
-          // contentMessage: contentMes,
-          () {
-        // Navigator.of(context).pop('refresh');
-        Navigator.of(_context).pop();
-        // Navigator.of(context).pop('refresh');
-      }, ForSuccess: true);
+          contentMessage: contentMes,
+              () {
+            // Navigator.of(context).pop('refresh');
+            Navigator.of(_context).pop();
+            // Navigator.of(context).pop('refresh');
+          }, ForSuccess: true);
 
       bool? tempBool;
       if (row.getCells()[5].value.toString() == "Yes" ||
@@ -1632,8 +1643,6 @@ class TableDataSource extends DataGridSource {
       //     "chequePayname":row.getCells()[4].value.toString()}
       // ]
       // );
-
-
       DBbloc2.add(PostExcelDataEvent(
           row.getCells()[2].value.toString(),
           row.getCells()[1].value.toString(),

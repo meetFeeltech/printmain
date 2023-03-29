@@ -79,20 +79,13 @@ class _LogPrintState extends State<LogPrint> {
         ),
       ),
 
+
+
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(40),
         child: AppBar(
           backgroundColor: Color(0xFF3182B3),
           title: Text("FTS Bulk Cheque Printing Software"),
-          leading: IconButton(
-            tooltip: "Back",
-            iconSize: 26,
-            color: Colors.white,
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
         ),
       ),
 
@@ -110,12 +103,16 @@ class _LogPrintState extends State<LogPrint> {
               return mainAllCategoryView();
             } else if (state is DeleteLogDataState) {
               Delete_model_data = state.deleteResponse;
+
               allcategorymodelData = state.allCatoModel;
               _allCategoryDataSource =
                   AllCategoryDataSource(allcategorymodelData!,context,vacBloc);
+
+
               return mainAllCategoryView();
             } else {
               return ThemeHelper.buildCommonInitialWidgetScreen();
+
             }
           },
           listener: (context, state) {
@@ -123,9 +120,7 @@ class _LogPrintState extends State<LogPrint> {
               print(state.exception.toString());
 
               final main_width = MediaQuery.of(context).size.width;
-
               ThemeHelper.customDialogForMessage(
-                autoRemoveDialog: true,
                   isBarrierDismissible: false,
                   context,
                   "${state.exception.toString().replaceAll("Exception: No Internet :", "").replaceAll("Exception: User Not Found :", "")}!",
@@ -137,7 +132,6 @@ class _LogPrintState extends State<LogPrint> {
                     // Navigator.of(context).pop('refresh');
                   },
                   ForSuccess: false);
-
 
             }
           },
@@ -393,21 +387,61 @@ class AllCategoryDataSource extends DataGridSource{
                 icon: const Icon(Icons.delete),
                 onPressed: () {
                   // print("abcejkc : ${row.getCells()[1].value.toString()}");
-                  vacBloc.add(DeleteLogEvent("${row.getCells()[1].value.toString()}"));
-                  final main_width = MediaQuery.of(_context1).size.width;
-                  ThemeHelper.customDialogForMessage(
-                    autoRemoveDialog: true,
-                      isBarrierDismissible: false,
-                      _context1,
-                      "Print Log Deleted!",
-                      main_width * 0.25,
-                      // contentMessage: contentMes,
-                          () {
-                        // Navigator.of(context).pop('refresh');
-                        Navigator.of(_context1).pop();
-                        // Navigator.of(context).pop('refresh');
-                      },
-                      ForSuccess: false);
+
+
+
+                  showDialog(
+                      context: _context1,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Row(
+                            children: [
+                              Text("Are you sure you want to delete this Log?",
+                              style: TextStyle(
+                                fontSize: 17
+                              ),),
+                            ],
+                          ),
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              SizedBox(
+                                width: 40,
+                              ),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    vacBloc.add(DeleteLogEvent("${row.getCells()[1].value.toString()}"));
+
+                                    Navigator.of(context).pop();
+
+                                    final main_width = MediaQuery.of(_context1).size.width;
+                                    ThemeHelper.customDialogForMessage(
+                                        isBarrierDismissible: false,
+                                        _context1,
+                                        "Print Log Deleted!",
+                                        main_width * 0.25,
+                                            () {
+                                          Navigator.of(_context1).pop();
+                                        },
+                                        ForSuccess: false);
+
+                                  },
+                                  child: Text("Yes")),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text("No")),
+                            ],
+                          ),
+                          shadowColor: Colors.grey,
+                        );
+                      }
+                      );
+
+
+
+
                 },
               ),
             ) :

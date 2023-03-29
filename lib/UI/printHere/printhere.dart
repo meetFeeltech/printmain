@@ -154,7 +154,7 @@ class _PrintHereState extends State<PrintHere> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                "${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".capitalize(),
+                                "${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".toUpperCase(),
                               overflow: TextOverflow.fade,
                               softWrap: true,
                               maxLines:2,),
@@ -379,7 +379,7 @@ class _PrintHereState extends State<PrintHere> {
                        child: pw.Container(
                          height: 50,
                          width: 500,
-                         child: pw.Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".capitalize(),
+                         child: pw.Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".toUpperCase(),
                            maxLines: 2,
                            style: pw.TextStyle(
                              fontSize: 12,
@@ -537,7 +537,7 @@ class _PrintHereState extends State<PrintHere> {
                         child: pw.Container(
                           height: 50,
                           width: 500,
-                          child: pw.Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".capitalize(),
+                          child: pw.Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".toUpperCase(),
                             maxLines: 2,
                             style: pw.TextStyle(
                               fontSize: 12,
@@ -671,7 +671,7 @@ class _PrintHereState extends State<PrintHere> {
                               child: pw.Container(
                                 height: 50,
                                 width: 500,
-                                child: pw.Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".capitalize(),
+                                child: pw.Text("${NumberToWordsEnglish.convert(int.parse(widget.a4))} only".toUpperCase(),
                                   maxLines: 2,
                                   style: pw.TextStyle(
                                     fontSize: 12,
@@ -729,8 +729,8 @@ class _PrintHereState extends State<PrintHere> {
 
 }
 
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
-  }
-}
+// extension StringExtension on String {
+//   String capitalize() {
+//     return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+//   }
+// }
