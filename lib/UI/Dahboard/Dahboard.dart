@@ -377,7 +377,7 @@ class _DashboardState extends State<Dashboard> {
           context, DBBloc, x1: rowdata1, repositoryRepo, rowdata1);
 
       print("all data $rowdata1");
-      print("one data ${rowdata1.elementAt(1)}");
+      // print("one data ${rowdata1.elementAt(1)}");
       // print("one data ${x1.elementAt(1).elementAt(3)}");
 
       bulkprintData = rowdata1;
