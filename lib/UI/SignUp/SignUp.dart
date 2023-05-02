@@ -20,7 +20,7 @@ class _SignUpState extends State<SignUp> {
         child: AppBar(
           // foregroundColor: Colors.black,
           backgroundColor: Color(0xFF3182B3),
-          title: Text("FTS Bulk Cheque Printing Softwere"),
+          title: Text("FTS Bulk Cheque Printing Software"),
         ),
       ),
 

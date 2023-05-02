@@ -825,7 +825,6 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                   Flexible(
                                     child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
                                       child: Container(
                                         height: main_height * 0.045,
                                         width: main_width * 0.12,
@@ -833,23 +832,14 @@ class _DashboardState extends State<Dashboard> {
                                             color: Colors.blue[50],
                                             borderRadius:
                                             BorderRadius.circular(7)),
-                                        child: Column(
-                                          // mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Text(
-                                              "${rowdata1.length}",
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "${rowdata1.length}",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),

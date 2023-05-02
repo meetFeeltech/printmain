@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cheque_print">
    <application
-        android:label="FTS Bulk Cheque Printing Softwere"
+        android:label="FTS Bulk Cheque Printing Software"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
